@@ -2,7 +2,7 @@
 
 ## Project description
 
-Desrcribe what your making here...
+I am going to attempt to recreate Pac Man for this major project. 
 
 ## Needs to have list
 
