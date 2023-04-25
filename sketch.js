@@ -13,7 +13,7 @@ class Cell {
     this.f = 0;
     this.g = 0;
     this.h = 0;
-    this.neighbor = [];
+    this.neighbors = [];
     this.previous = undefined;
     this.isWall = wall;
     this.wall = false;
@@ -37,7 +37,20 @@ class Cell {
   }
 
   addNeighbor(grid) {
-    
+    let i = this.i;
+    let j = this.j;
+    if (i < COLS - 1) {
+      this.neighbors.push(grid[i + 1][j]);
+    }
+    if (i > 0) {
+      this.neighbors.push(grid[i - 1][j]);
+    }
+    if (j < ROWS - 1) {
+      this.neighbors.push(grid[i][j + 1]);
+    }
+    if (j > 0) {
+      this.neighbors.push(grid[i][j - 1]);
+    }
   }
 }
 
@@ -70,7 +83,58 @@ function draw() {
 }
 
 function A_star() {
+  if (openSet.length > 0) {
 
+    let winner = 0;
+    for (let i = 0; i < openSet.length; i ++) {
+      if (openSet[i].f < openSet[winner].f) {
+        winner = i;
+      }
+    }
+
+    let current = openSet[winner];
+
+    if (current === end) {
+      //noLoop();
+      //console.log("DONE");
+    }
+
+    removeFromArray(openSet, current);
+    closedSet.push(current);
+
+    let neighbors = current.neighbors;
+    for (let i = 0; i < neighbors.length; i ++) {
+      let neighbor = neighbors[i];
+
+      if (!closedSet.includes(neighbor) && !neighbor.wall) {
+        let tempG = current.g + 1;
+
+        if (openSet.includes(neighbor)) {
+          if (tempG < neighbor.g) {
+            neighbor.g = tempG;
+          }
+        }
+        else {
+          neighbor.g = tempG;
+          openSet.push(neighbor);
+        }
+
+
+
+      }
+    }
+
+  }
+}
+
+function heuristic()
+
+function removeFromArray(arr, elt) {
+  for (let i = arr.length - 1; i >= 0; i --) {
+    if (arr[i] === elt) {
+      arr.splice(i, 1);
+    }
+  }
 }
 
 function createCellSize() {
