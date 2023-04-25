@@ -7,7 +7,7 @@
 // OpenGameArt.org
 
 class Cell {
-  constructor(i, j) {
+  constructor(i, j, wall) {
     this.x = i;
     this.y = j;
     this.f = 0;
@@ -15,7 +15,16 @@ class Cell {
     this.h = 0;
     this.neighbor = [];
     this.previous = undefined;
+    this.isWall = wall;
     this.wall = false;
+
+    // if (random(1) < 0.3) {
+    //   this.wall = true;
+    // }
+
+    if (this.isWall === 1) {
+      this.wall = true;
+    }
   }
 
   display(cellColor) {
@@ -35,8 +44,9 @@ class Cell {
 let closedSet = [], openSet = [];
 let start, end;
 let cellSize;
-const ROWS = 25, COLS = 25;
-let grid = new Array(COLS);
+const ROWS = 5, COLS = 5;
+let grid = [[1, 1, 1, 1, 1], [1, 0, 0, 0, 1] ,[1, 0, 0, 0, 1], [1, 0, 0, 0, 1], [0, 0, 0, 0, 0]];
+// let grid = new Array(COLS);
 let path = [];
 let noSolution = false;
 
@@ -81,13 +91,13 @@ function displayGrid() {
 }
 
 function createGrid() {
-  for (let i = 0; i < COLS; i ++) {
-    grid[i] = new Array(ROWS);
-  }
+  // for (let i = 0; i < COLS; i ++) {
+  //   grid[i] = new Array(ROWS);
+  // }
 
   for (let i = 0; i < COLS; i ++) {
     for (let j = 0; j < ROWS; j ++) {
-      grid[i][j] = new Cell(i, j);  
+      grid[i][j] = new Cell(i, j, grid[i][j]);  
     }
   }
 
@@ -103,7 +113,7 @@ function displayCells() {
     closedSet[i].display(color(255, 0, 0));
   }
 
-  for (let i = 0; i < openSet.length; i ++) {
-    closedSet[i].display(color(0, 255, 0));
-  }
+  // for (let i = 0; i < openSet.length; i ++) {
+  //   closedSet[i].display(color(0, 255, 0));
+  // }
 }
