@@ -6,14 +6,6 @@
 // - describe what you did to take this project "above and beyond"
 // OpenGameArt.org
 
-let closedSet = [], openSet = [];
-let start, end;
-let cellSize;
-const ROWS = 25, COLS = 25;
-let grid = new Array(COLS);
-let path = [];
-let noSolution = false;
-
 class Cell {
   constructor(i, j) {
     this.x = i;
@@ -36,9 +28,17 @@ class Cell {
   }
 
   addNeighbor(grid) {
-
+    
   }
 }
+
+let closedSet = [], openSet = [];
+let start, end;
+let cellSize;
+const ROWS = 25, COLS = 25;
+let grid = new Array(COLS);
+let path = [];
+let noSolution = false;
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
