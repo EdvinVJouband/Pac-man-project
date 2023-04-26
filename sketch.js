@@ -58,7 +58,7 @@ let closedSet = [], openSet = [];
 let start, end;
 let cellSize;
 const ROWS = 5, COLS = 5;
-let grid = [[1, 1, 1, 1, 1], [1, 0, 0, 0, 1] ,[1, 0, 0, 0, 1], [1, 0, 0, 0, 1], [0, 0, 0, 0, 0]];
+let grid = [[0, 0, 0, 0, 0], [0, 0, 0, 0, 0] ,[0, 0, 0, 0, 0], [0, 0, 0, 0, 0], [0, 0, 0, 0, 0]];
 // let grid = new Array(COLS);
 let path = [];
 let noSolution = false;
@@ -96,7 +96,7 @@ function A_star() {
 
     if (current === end) {
       //noLoop();
-      //console.log("DONE");
+      console.log("DONE");
     }
 
     removeFromArray(openSet, current);
@@ -119,15 +119,24 @@ function A_star() {
           openSet.push(neighbor);
         }
 
+        neighbor.h = heuristic(neighbor, end);
 
+        neighbor.f = neighbor.g + neighbor.h;
 
+        neighbor.previous = current;
       }
     }
 
   }
+  else {
+    // 
+  }
 }
 
-function heuristic()
+function heuristic(a, b) {
+  let d = abs(a.i - b.i) + abs(a.j - b.j);
+  return d;
+}
 
 function removeFromArray(arr, elt) {
   for (let i = arr.length - 1; i >= 0; i --) {
@@ -177,7 +186,41 @@ function displayCells() {
     closedSet[i].display(color(255, 0, 0));
   }
 
-  // for (let i = 0; i < openSet.length; i ++) {
-  //   closedSet[i].display(color(0, 255, 0));
-  // }
+  for (let i = 0; i < openSet.length; i ++) {
+    closedSet[i].display(color(0, 255, 0));
+  }
+
+  if (!noSolution) {
+    let winner = 0;
+    for (let i = 0; i < openSet.length; i ++) {
+      if (openSet[i].f < openSet[winner].f) {
+        winner = i;
+      }
+    }
+    let current = openSet[winner];
+
+    if (current === end) {
+      path = [];
+      let temp = current;
+      path.push(temp);
+      while (temp.previous) {
+        path.push(temp.previous);
+        temp = temp.previous;
+      }
+      noLoop();
+      console.log("DONE");
+    }
+
+    path = [];
+    let temp = current;
+    path.push(temp);
+    while (temp.previous) {
+      path.push(temp.previous);
+      temp = temp.previous;
+    }
+  }
+
+  for (let i = 0; i < path.length; i ++) {
+    path[i].show(color(0, 0, 255));
+  }
 }
