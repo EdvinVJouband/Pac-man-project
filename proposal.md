@@ -11,12 +11,12 @@ I intend on making a mostly accurate version of the original Pac Man, with many 
 - The first level of the game.
 - Accurate pathinding for the ghosts.
 - The points systeme used in the original game.
-- The ability to save hight scores.
+- The ability to save hight scores in local storage.
+- Title screen/U.I.
 
 ## Nice to have list
 
 - More levels.
-- Title screen/U.I.
 - Settings and options such as changing the diffculty, color/backgrounds, framerate/performance and especially button/key mapping.
 - The ability for a second player to controle one or more of the ghosts, or just multiplayer in some form.
 - Procedruraly generated levels

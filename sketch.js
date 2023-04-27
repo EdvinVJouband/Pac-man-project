@@ -15,16 +15,16 @@ class Cell {
     this.h = 0;
     this.neighbors = [];
     this.previous = undefined;
-    this.isWall = wall;
+    //this.isWall = wall;
     this.wall = false;
 
-    // if (random(1) < 0.3) {
-    //   this.wall = true;
-    // }
-
-    if (this.isWall === 1) {
+    if (random(1) < 0.3) {
       this.wall = true;
     }
+
+    // if (this.isWall === 1) {
+    //   this.wall = true;
+    // }
   }
 
   display(cellColor) {
@@ -57,9 +57,9 @@ class Cell {
 let closedSet = [], openSet = [];
 let start, end;
 let cellSize;
-const ROWS = 5, COLS = 5;
-let grid = [[0, 0, 0, 0, 0], [0, 0, 0, 0, 0] ,[0, 0, 0, 0, 0], [0, 0, 0, 0, 0], [0, 0, 0, 0, 0]];
-// let grid = new Array(COLS);
+const ROWS = 25, COLS = 25;
+//let grid = [[0, 0, 0, 0, 0], [0, 0, 0, 0, 0] ,[0, 0, 0, 0, 0], [0, 0, 0, 0, 0], [0, 0, 0, 0, 0]];
+let grid = new Array(COLS);
 let path = [];
 let noSolution = false;
 
@@ -71,6 +71,9 @@ function setup() {
 
   start = grid[0][0];
   end = grid[COLS - 1][ROWS - 1];
+
+  start.wall = false;
+  end.wall = false;
 
   openSet.push(start);
 }
@@ -95,7 +98,7 @@ function A_star() {
     let current = openSet[winner];
 
     if (current === end) {
-      //noLoop();
+      noLoop();
       console.log("DONE");
     }
 
@@ -126,7 +129,6 @@ function A_star() {
         neighbor.previous = current;
       }
     }
-
   }
   else {
     // 
@@ -164,9 +166,9 @@ function displayGrid() {
 }
 
 function createGrid() {
-  // for (let i = 0; i < COLS; i ++) {
-  //   grid[i] = new Array(ROWS);
-  // }
+  for (let i = 0; i < COLS; i ++) {
+    grid[i] = new Array(ROWS);
+  }
 
   for (let i = 0; i < COLS; i ++) {
     for (let j = 0; j < ROWS; j ++) {
@@ -221,6 +223,6 @@ function displayCells() {
   }
 
   for (let i = 0; i < path.length; i ++) {
-    path[i].show(color(0, 0, 255));
+    path[i].display(color(0, 0, 255));
   }
 }
