@@ -6,37 +6,48 @@
 // - describe what you did to take this project "above and beyond"
 // OpenGameArt.org
 
+let openSet = [], closedSet = [];
+let start, end;
+const ROWS = 5, COLS = 5;
+let cellSize;
+// let grid = new Array(COLS);
+let grid = [[0, 0, 0, 0, 0], [0, 0, 0, 0, 0], [0, 0, 0, 0, 0], [0, 0, 0, 0, 0], [0, 0, 0, 0, 0]];
+let path = [];
+let nosolution = false;
+let playerX = 1, playerY = 1;
+
+// stores all the nessessairy values for the cells in objects
 class Cell {
-  constructor(i, j, wall) {
-    this.x = i;
-    this.y = j;
+  constructor(i, j, isWall) {
+    this.i = i;
+    this.j = j;
     this.f = 0;
     this.g = 0;
     this.h = 0;
     this.neighbors = [];
     this.previous = undefined;
-    //this.isWall = wall;
     this.wall = false;
 
-    if (random(1) < 0.3) {
-      this.wall = true;
-    }
-
-    // if (this.isWall === 1) {
+    // there is a 30% chance of a cell being generated as a wall/obstacle
+    // if (random(1) < 0.3) {
     //   this.wall = true;
     // }
+
+    if (isWall === 1) {
+      this.wall = true;
+    }
   }
 
-  display(cellColor) {
+  show(cellColor) {
     fill(cellColor);
     if (this.wall) {
       fill(0);
     }
     noStroke();
-    rect(this.x * cellSize, this.y * cellSize, cellSize - 1, cellSize - 1);
+    rect(this.i * cellSize, this.j * cellSize, cellSize - 1, cellSize - 1);
   }
-
-  addNeighbor(grid) {
+  
+  addNeighbors(grid) {
     let i = this.i;
     let j = this.j;
     if (i < COLS - 1) {
@@ -54,18 +65,15 @@ class Cell {
   }
 }
 
-let closedSet = [], openSet = [];
-let start, end;
-let cellSize;
-const ROWS = 25, COLS = 25;
-//let grid = [[0, 0, 0, 0, 0], [0, 0, 0, 0, 0] ,[0, 0, 0, 0, 0], [0, 0, 0, 0, 0], [0, 0, 0, 0, 0]];
-let grid = new Array(COLS);
-let path = [];
-let noSolution = false;
-
 function setup() {
   createCanvas(windowWidth, windowHeight);
-  createCellSize();
+
+  if (width < height) {
+    cellSize = width/ROWS;
+  }
+  else {
+    cellSize = height/ROWS;
+  }
 
   createGrid();
 
@@ -80,12 +88,27 @@ function setup() {
 
 function draw() {
   background(220);
-  A_star();
+  //A_Star();
   displayGrid();
   displayCells();
+  displayPlayer();
+  updatePlayer();
 }
 
-function A_star() {
+function removeFromArray(arr, elt){
+  for (let i = arr.length - 1; i >= 0; i --) {
+    if (arr[i] === elt) {
+      arr.splice(i, 1);
+    }
+  }
+}
+
+function heuristic(a, b) {
+  let d = abs(a.i - b.i) + abs(a.j - b.j);
+  return d;
+}
+
+function A_Star() {
   if (openSet.length > 0) {
 
     let winner = 0;
@@ -94,7 +117,6 @@ function A_star() {
         winner = i;
       }
     }
-
     let current = openSet[winner];
 
     if (current === end) {
@@ -131,68 +153,50 @@ function A_star() {
     }
   }
   else {
-    // 
-  }
-}
-
-function heuristic(a, b) {
-  let d = abs(a.i - b.i) + abs(a.j - b.j);
-  return d;
-}
-
-function removeFromArray(arr, elt) {
-  for (let i = arr.length - 1; i >= 0; i --) {
-    if (arr[i] === elt) {
-      arr.splice(i, 1);
-    }
-  }
-}
-
-function createCellSize() {
-  if (width < height) {
-    cellSize = windowWidth/ROWS;
-  }
-  else {
-    cellSize = windowHeight/ROWS;
+    //
   }
 }
 
 function displayGrid() {
-  for (let i = 0; i < COLS; i ++) {
-    for (let j = 0; j < ROWS; j ++) {
-      grid[i][j].display(color(255));
-    }
+  // displays the grid with the values from the show function
+  for (let i = 0; i < COLS; i++) {
+    for (let j = 0; j < ROWS; j++) {
+      grid[i][j].show(color(255));
+      
+    } 
   }
 }
 
 function createGrid() {
-  for (let i = 0; i < COLS; i ++) {
-    grid[i] = new Array(ROWS);
-  }
+  // create a 2D array
+  // for (let i = 0; i < COLS; i++) {
+  //   grid[i] = new Array(ROWS);
+  // }
 
-  for (let i = 0; i < COLS; i ++) {
-    for (let j = 0; j < ROWS; j ++) {
-      grid[i][j] = new Cell(i, j, grid[i][j]);  
+  for (let i = 0; i < COLS; i++) {
+    for (let j = 0; j < ROWS; j++) {
+      grid[i][j] = new Cell(i, j, grid[i][j]);
     }
   }
 
-  for (let i = 0; i < COLS; i ++) {
-    for (let j = 0; j < ROWS; j ++) {
-      grid[i][j].addNeighbor(grid);
+  for (let i = 0; i < COLS; i++) {
+    for (let j = 0; j < ROWS; j++) {
+      grid[i][j].addNeighbors(grid);
     }
   }
 }
 
 function displayCells() {
-  for (let i = 0; i < closedSet.length; i ++) {
-    closedSet[i].display(color(255, 0, 0));
-  }
-
-  for (let i = 0; i < openSet.length; i ++) {
-    closedSet[i].display(color(0, 255, 0));
-  }
-
-  if (!noSolution) {
+  // make all cells that have already been checked red
+  // for (let i = 0; i < closedSet.length; i ++) {
+  //   closedSet[i].show(color(255, 0, 0));
+  // }
+  // make the color of the neighbors green
+  // for (let i = 0; i < openSet.length; i ++) {
+  //   openSet[i].show(color(0, 255, 0));
+  // }
+  
+  if (!nosolution) {
     let winner = 0;
     for (let i = 0; i < openSet.length; i ++) {
       if (openSet[i].f < openSet[winner].f) {
@@ -222,7 +226,30 @@ function displayCells() {
     }
   }
 
-  for (let i = 0; i < path.length; i ++) {
-    path[i].display(color(0, 0, 255));
+  // for (let i = 0; i < path.length; i ++) {
+  //   path[i].show(color(0, 0, 255));
+  // }
+}
+
+function displayPlayer() {
+  fill("yellow");
+  circle(playerX*cellSize/2, playerY*cellSize/2, cellSize);
+}
+
+function updatePlayer() {
+  if (keyIsDown(68)) { //d
+    playerX += 0.1;
+    // if(playerX*cellSize === Cell.i) {
+    //   playerX -= 0.1;
+    // }
+  }
+  if (keyIsDown(65)) { //a
+    playerX -= 0.1;
+  }
+  if (keyIsDown(87)) { //w
+    playerY -= 0.1;
+  }
+  if (keyIsDown(83)) { //s
+    playerY += 0.1;
   }
 }
