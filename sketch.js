@@ -11,7 +11,7 @@ let start, end;
 const ROWS = 5, COLS = 5;
 let cellSize;
 // let grid = new Array(COLS);
-let grid = [[0, 0, 0, 0, 0], [0, 0, 0, 0, 0], [0, 0, 0, 0, 0], [0, 0, 0, 0, 0], [0, 0, 0, 0, 0]];
+let grid = [[0, 0, 0, 0, 0], [0, 0, 0, 0, 0], [0, 0, 1, 0, 0], [0, 0, 0, 0, 0], [0, 0, 0, 0, 0]];
 let path = [];
 let nosolution = false;
 let playerX = 1, playerY = 1;
@@ -44,7 +44,7 @@ class Cell {
       fill(0);
     }
     noStroke();
-    rect(this.i * cellSize, this.j * cellSize, cellSize - 1, cellSize - 1);
+    rect(this.i * cellSize + cellSize/2, this.j * cellSize + cellSize/2, cellSize - 1, cellSize - 1);
   }
   
   addNeighbors(grid) {
@@ -67,6 +67,7 @@ class Cell {
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
+  rectMode(CENTER);
 
   if (width < height) {
     cellSize = width/ROWS;
@@ -239,9 +240,15 @@ function displayPlayer() {
 function updatePlayer() {
   if (keyIsDown(68)) { //d
     playerX += 0.1;
-    // if(playerX*cellSize === Cell.i) {
-    //   playerX -= 0.1;
-    // }
+    
+    for (let i = 0; i < COLS; i ++) {
+      for (let j = 0; j < ROWS; j ++) {
+        if (grid[i][j].wall === true && grid[i][j].i*cellSize + cellSize/2 <= playerX*cellSize && grid[i][j].i*cellSize + cellSize/2 ) {
+          playerX -= 0.1;
+        }
+      }
+    }
+
   }
   if (keyIsDown(65)) { //a
     playerX -= 0.1;
