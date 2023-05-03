@@ -15,7 +15,6 @@ let grid = [[0, 0, 0, 0, 0], [0, 0, 0, 0, 0], [0, 0, 1, 0, 0], [0, 0, 0, 0, 0], 
 let path = [];
 let nosolution = false;
 let playerX = 1, playerY = 1;
-let playerMovement = 0;
 
 // stores all the nessessairy values for the cells in objects
 class Cell {
@@ -238,9 +237,8 @@ function displayPlayer() {
 }
 
 function updatePlayer() {
-  if (keyIsDown(68) && playerMovement === "noMovement") { //d
+  if (keyIsDown(68)) { //d
     playerX += 0.05;
-    playerMovement = "right";
     
     for (let i = 0; i < COLS; i ++) {
       for (let j = 0; j < ROWS; j ++) {
@@ -250,24 +248,25 @@ function updatePlayer() {
       }
     }
 
-    playerMovement = "noMovement";
   }
-  if (keyIsDown(65) && playerMovement === "noMovement") { //a
+  if (keyIsDown(65)) { //a
     playerX -= 0.05;
-    playerMovement = "left";
 
-    playerMovement = "noMovement";
+    for (let i = 0; i < COLS; i ++) {
+      for (let j = 0; j < ROWS; j ++) {
+        while (grid[i][j].wall === true && i*cellSize + cellSize <= playerX*cellSize/2 + cellSize/2 && i*cellSize >= playerX*cellSize/2 - cellSize/2 && j*cellSize <= playerY*cellSize/2 + cellSize/2  && j*cellSize + cellSize >= playerY*cellSize/2 - cellSize/2) {
+          playerX += 0.025;
+        }
+      }
+    }
+
   }
-  if (keyIsDown(87) && playerMovement === "noMovement") { //w
+  if (keyIsDown(87)) { //w
     playerY -= 0.05;
-    playerMovement = "up";
 
-    playerMovement = "noMovement";
   }
-  if (keyIsDown(83) && playerMovement === "noMovement") { //s
+  if (keyIsDown(83)) { //s
     playerY += 0.05;
-    playerMovement = "down";
 
-    playerMovement = "noMovement";
   }
 }
