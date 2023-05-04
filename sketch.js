@@ -11,10 +11,10 @@ let start, end;
 const ROWS = 5, COLS = 5;
 let cellSize;
 // let grid = new Array(COLS);
-let grid = [[0, 0, 0, 0, 0], [1, 0, 1, 1, 0], [0, 0, 1, 0, 0], [1, 0, 0, 0, 0], [0, 0, 0, 1, 0]];
+let grid = [[0, 0, 0, 0, 0], [1, 0, 1, 1, 0], [1, 0, 1, 0, 0], [1, 0, 0, 0, 0], [1, 1, 0, 1, 0]];
 let path = [];
 let nosolution = false;
-let playerX = 1, playerY = 1;
+let playerX = 0, playerY = 0;
 let playerRadius, playerDiameter;
 
 // stores all the nessessairy values for the cells in objects
@@ -237,7 +237,7 @@ function displayCells() {
 
 function displayPlayer() {
   fill("yellow");
-  circle(playerX*playerRadius, playerY*playerRadius, playerDiameter);
+  circle(playerX*cellSize/2, playerY*cellSize/2, cellSize);
 }
 
 function updatePlayer() {
@@ -246,8 +246,8 @@ function updatePlayer() {
     
     for (let i = 0; i < COLS; i ++) {
       for (let j = 0; j < ROWS; j ++) {
-        while (grid[i][j].wall === true && i*cellSize <= playerX*playerRadius + playerRadius && i*cellSize + cellSize >= playerX*playerRadius - playerRadius && j*cellSize <= playerY*playerRadius + playerRadius  && j*cellSize + cellSize >= playerY*playerRadius - playerRadius) {
-          playerX -= 0.025;
+        while (grid[i][j].wall === true && i*cellSize + cellSize >= playerX*playerRadius - playerRadius && i*cellSize <= playerX*playerRadius + playerRadius && j*cellSize <= playerY*playerRadius + playerRadius && j*cellSize + cellSize >= playerY*playerRadius - playerRadius) {
+          playerX -= 0.1;
         }
       }
     }
@@ -258,8 +258,8 @@ function updatePlayer() {
 
     for (let i = 0; i < COLS; i ++) {
       for (let j = 0; j < ROWS; j ++) {
-        while (grid[i][j].wall === true && i*cellSize + cellSize >= playerX*playerRadius - playerRadius && i*cellSize <= playerX*playerRadius + playerRadius && j*cellSize <= playerY*playerRadius + playerRadius  && j*cellSize + cellSize >= playerY*playerRadius - playerRadius) {
-          playerX += 0.025;
+        while (grid[i][j].wall === true && i*cellSize + cellSize >= playerX*playerRadius - playerRadius && i*cellSize <= playerX*playerRadius + playerRadius && j*cellSize <= playerY*playerRadius + playerRadius && j*cellSize + cellSize >= playerY*playerRadius - playerRadius) {
+          playerX += 0.1;
         }
       }
     }
@@ -271,7 +271,7 @@ function updatePlayer() {
     for (let i = 0; i < COLS; i ++) {
       for (let j = 0; j < ROWS; j ++) {
         while (grid[i][j].wall === true && i*cellSize + cellSize >= playerX*playerRadius - playerRadius && i*cellSize <= playerX*playerRadius + playerRadius && j*cellSize <= playerY*playerRadius + playerRadius && j*cellSize + cellSize >= playerY*playerRadius - playerRadius) {
-          playerY += 0.025;
+          playerY += 0.1;
         }
       }
     }
@@ -282,8 +282,8 @@ function updatePlayer() {
 
     for (let i = 0; i < COLS; i ++) {
       for (let j = 0; j < ROWS; j ++) {
-        while (grid[i][j].wall === true && i*cellSize + cellSize >= playerX*playerRadius - playerRadius && i*cellSize <= playerX*playerRadius + playerRadius && j*cellSize <= playerY*playerRadius + playerRadius  && j*cellSize + cellSize >= playerY*playerRadius + playerRadius) {
-          playerY -= 0.025;
+        while (grid[i][j].wall === true && i*cellSize + cellSize >= playerX*playerRadius - playerRadius && i*cellSize <= playerX*playerRadius + playerRadius && j*cellSize <= playerY*playerRadius + playerRadius && j*cellSize + cellSize >= playerY*playerRadius - playerRadius) {
+          playerY -= 0.1;
         }
       }
     }
