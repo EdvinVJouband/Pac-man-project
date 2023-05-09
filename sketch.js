@@ -241,44 +241,45 @@ function displayPlayer() {
 }
 
 function updatePlayer() {
+  let playerSpeed = 5;
   if (keyIsDown(68)) { //d
-    playerX += 3;
+    playerX += playerSpeed;
     
     for (let i = 0; i < COLS; i ++) {
       for (let j = 0; j < ROWS; j ++) {
         while (grid[i][j].wall === true && i*cellSize + cellSize > playerX - playerRadius && i*cellSize < playerX + playerRadius && j*cellSize < playerY + playerRadius && j*cellSize + cellSize > playerY - playerRadius) {
-          playerX -= 0.1;
+          playerX -= 1;
         }
       }
     }
 
   }
   if (keyIsDown(65)) { //a
-    playerX -= 3;
+    playerX -= playerSpeed;
 
     for (let i = 0; i < COLS; i ++) {
       for (let j = 0; j < ROWS; j ++) {
         while (grid[i][j].wall === true && i*cellSize + cellSize >= playerX - playerRadius && i*cellSize <= playerX + playerRadius && j*cellSize <= playerY + playerRadius && j*cellSize + cellSize >= playerY - playerRadius) {
-          playerX += 0.1;
+          playerX += 1;
         }
       }
     }
 
   }
   if (keyIsDown(87)) { //w
-    playerY -= 3;
+    playerY -= playerSpeed;
 
     for (let i = 0; i < COLS; i ++) {
       for (let j = 0; j < ROWS; j ++) {
         while (grid[i][j].wall === true && i*cellSize + cellSize >= playerX - playerRadius && i*cellSize <= playerX + playerRadius && j*cellSize <= playerY + playerRadius && j*cellSize + cellSize >= playerY - playerRadius) {
-          playerY += 0.1;
+          playerY += 1;
         }
       }
     }
 
   }
   if (keyIsDown(83)) { //s
-    playerY += 3;
+    playerY += playerSpeed;
     // if (abs((playerY%cellSize)^2 - cellSize^2) < 3) {
     //   if (playerY%cellSize > cellSize2/2) {
     //     playerY += abs(playerY^2 - cellSize^2);
@@ -290,7 +291,7 @@ function updatePlayer() {
     for (let i = 0; i < COLS; i ++) {
       for (let j = 0; j < ROWS; j ++) {
         while (grid[i][j].wall === true && i*cellSize + cellSize >= playerX - playerRadius && i*cellSize <= playerX + playerRadius && j*cellSize <= playerY + playerRadius && j*cellSize + cellSize >= playerY - playerRadius) {
-          playerY -= 0.1;
+          playerY -= 1;
         }
       }
     }
