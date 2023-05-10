@@ -14,7 +14,7 @@ let cellSize;
 let grid = [[0, 0, 0, 0, 0], [1, 0, 1, 1, 0], [1, 0, 1, 0, 0], [1, 0, 0, 0, 0], [1, 1, 0, 1, 0]];
 let path = [];
 let nosolution = false;
-let playerX = 0, playerY = 0;
+let playerX = 1, playerY = 1;
 let playerRadius, playerDiameter;
 
 // stores all the nessessairy values for the cells in objects
@@ -241,119 +241,55 @@ function displayPlayer() {
 }
 
 function updatePlayer() {
-  let playerSpeed = 5;
-  if (keyIsDown(68)) { //d
-    playerX += playerSpeed;
-    
-    for (let i = 0; i < COLS; i ++) {
-      for (let j = 0; j < ROWS; j ++) {
-        while (grid[i][j].wall === true && i*cellSize + cellSize > playerX - playerRadius && i*cellSize < playerX + playerRadius && j*cellSize < playerY + playerRadius && j*cellSize + cellSize > playerY - playerRadius) {
-          playerX -= 1;
+  let playerSpeed = 1;
+  for (let m = 0; m < 5; m ++) {
+    if (keyIsDown(68)) { //d
+      playerX += playerSpeed;
+      
+      for (let i = 0; i < COLS; i ++) {
+        for (let j = 0; j < ROWS; j ++) {
+          while (grid[i][j].wall === true && i*cellSize + cellSize > playerX - playerRadius && i*cellSize < playerX + playerRadius && j*cellSize < playerY + playerRadius && j*cellSize + cellSize > playerY - playerRadius) {
+            playerX -= 1;
+          }
         }
       }
+
     }
+    if (keyIsDown(65)) { //a
+      playerX -= playerSpeed;
 
-  }
-  if (keyIsDown(65)) { //a
-    playerX -= playerSpeed;
-
-    for (let i = 0; i < COLS; i ++) {
-      for (let j = 0; j < ROWS; j ++) {
-        while (grid[i][j].wall === true && i*cellSize + cellSize >= playerX - playerRadius && i*cellSize <= playerX + playerRadius && j*cellSize <= playerY + playerRadius && j*cellSize + cellSize >= playerY - playerRadius) {
-          playerX += 1;
+      for (let i = 0; i < COLS; i ++) {
+        for (let j = 0; j < ROWS; j ++) {
+          while (grid[i][j].wall === true && i*cellSize + cellSize >= playerX - playerRadius && i*cellSize <= playerX + playerRadius && j*cellSize <= playerY + playerRadius && j*cellSize + cellSize >= playerY - playerRadius) {
+            playerX += 1;
+          }
         }
       }
+
     }
+    if (keyIsDown(87)) { //w
+      playerY -= playerSpeed;
 
-  }
-  if (keyIsDown(87)) { //w
-    playerY -= playerSpeed;
-
-    for (let i = 0; i < COLS; i ++) {
-      for (let j = 0; j < ROWS; j ++) {
-        while (grid[i][j].wall === true && i*cellSize + cellSize >= playerX - playerRadius && i*cellSize <= playerX + playerRadius && j*cellSize <= playerY + playerRadius && j*cellSize + cellSize >= playerY - playerRadius) {
-          playerY += 1;
+      for (let i = 0; i < COLS; i ++) {
+        for (let j = 0; j < ROWS; j ++) {
+          while (grid[i][j].wall === true && i*cellSize + cellSize >= playerX - playerRadius && i*cellSize <= playerX + playerRadius && j*cellSize <= playerY + playerRadius && j*cellSize + cellSize >= playerY - playerRadius) {
+            playerY += 1;
+          }
         }
       }
+
     }
+    if (keyIsDown(83)) { //s
+      playerY += playerSpeed;
 
-  }
-  if (keyIsDown(83)) { //s
-    playerY += playerSpeed;
-    // if (abs((playerY%cellSize)^2 - cellSize^2) < 3) {
-    //   if (playerY%cellSize > cellSize2/2) {
-    //     playerY += abs(playerY^2 - cellSize^2);
-    //   } else {
-    //     playerY -= abs(playerY^2 - cellSize^2);
-    //   }
-    // }
-
-    for (let i = 0; i < COLS; i ++) {
-      for (let j = 0; j < ROWS; j ++) {
-        while (grid[i][j].wall === true && i*cellSize + cellSize >= playerX - playerRadius && i*cellSize <= playerX + playerRadius && j*cellSize <= playerY + playerRadius && j*cellSize + cellSize >= playerY - playerRadius) {
-          playerY -= 1;
+      for (let i = 0; i < COLS; i ++) {
+        for (let j = 0; j < ROWS; j ++) {
+          while (grid[i][j].wall === true && i*cellSize + cellSize >= playerX - playerRadius && i*cellSize <= playerX + playerRadius && j*cellSize <= playerY + playerRadius && j*cellSize + cellSize >= playerY - playerRadius) {
+            playerY -= 1;
+          }
         }
       }
-    }
 
+    }
   }
 }
-
-// for (let i = 0; i < COLS; i ++) {
-//   for (let j = 0; j < ROWS; j ++) {
-//     while (grid[i][j].wall === true && i*cellSize + cellSize >= playerX*playerRadius - playerRadius && i*cellSize <= playerX*playerRadius + playerRadius && j*cellSize <= playerY*playerRadius + playerRadius && j*cellSize + cellSize >= playerY*playerRadius - playerRadius) {
-//       playerX += 0.1;
-//     }
-//   }
-// }
-
-// function updatePlayer() {
-//   if (keyIsDown(68)) { //d
-//     playerX += 0.1;
-    
-//     for (let i = 0; i < COLS; i ++) {
-//       for (let j = 0; j < ROWS; j ++) {
-//         while (grid[i][j].wall === true && i*cellSize <= playerX*playerRadius + playerRadius && j*cellSize <= playerY*playerRadius + playerRadius || grid[i][j].wall === true && i*cellSize <= playerX*playerRadius + playerRadius && j*cellSize + cellSize >= playerY*playerRadius) {
-//           playerX -= 0.1;
-//         }
-//       }
-//     }
-
-//   }
-//   if (keyIsDown(65)) { //a
-//     playerX -= 0.1;
-
-//     for (let i = 0; i < COLS; i ++) {
-//       for (let j = 0; j < ROWS; j ++) {
-//         while (grid[i][j].wall === true && i*cellSize + cellSize >= playerX*playerRadius && j*cellSize <= playerY*playerRadius + playerRadius || grid[i][j].wall === true && i*cellSize <= playerX*playerRadius + playerRadius && j*cellSize + cellSize >= playerY*playerRadius) {
-//           playerX += 0.1;
-//         }
-//       }
-//     }
-
-//   }
-//   if (keyIsDown(87)) { //w
-//     playerY -= 0.1;
-
-//     for (let i = 0; i < COLS; i ++) {
-//       for (let j = 0; j < ROWS; j ++) {
-//         while (grid[i][j].wall === true && j*cellSize + cellSize >= playerY*playerRadius && i*cellSize <= playerX*playerRadius + playerRadius || grid[i][j].wall === true && j*cellSize + cellSize >= playerY*playerRadius && i*cellSize + cellSize >= i*cellSize) {
-//           playerY += 0.1;
-//         }
-//       }
-//     }
-
-//   }
-//   if (keyIsDown(83)) { //s
-//     playerY += 0.1;
-
-//     for (let i = 0; i < COLS; i ++) {
-//       for (let j = 0; j < ROWS; j ++) {
-//         while (grid[i][j].wall === true && j*cellSize <= playerY*playerRadius + playerDiameter && i*cellSize <= playerX*playerRadius + playerDiameter || grid[i][j].wall === true && i* cellSize + cellSize >= playerX*playerRadius) {
-//           playerY -= 0.1;
-//         }
-//       }
-//     }
-
-//   }
-// }
