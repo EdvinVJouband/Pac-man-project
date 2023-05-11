@@ -12,6 +12,7 @@ const ROWS = 5, COLS = 5;
 let cellSize;
 // let grid = new Array(COLS);
 let grid = [[0, 0, 0, 0, 0], [1, 0, 1, 1, 0], [1, 0, 1, 0, 0], [1, 0, 0, 0, 0], [1, 1, 0, 1, 0]];
+let pelletArray = [];
 let path = [];
 let nosolution = false;
 let playerX = 1, playerY = 1;
@@ -62,6 +63,27 @@ class Cell {
     }
     if (j > 0) {
       this.neighbors.push(grid[i][j - 1]);
+    }
+  }
+}
+
+class Pellet {
+  constructor(i, j, isWall) {
+    this.i = i;
+    this.j = j;
+    this.wall = isWall;
+    this.pelletSize = 5;
+    this.pelletColor = "red";
+  }
+
+  update() {
+
+  }
+
+  display() {
+    if(this.wall === 0) {
+      fill(this.pelletColor);
+      circle(this.i*cellSize + cellSize/2, this.j*cellSize + cellSize/2, this.pelletSize);
     }
   }
 }
@@ -166,7 +188,7 @@ function displayGrid() {
   for (let i = 0; i < COLS; i++) {
     for (let j = 0; j < ROWS; j++) {
       grid[i][j].show(color(255));
-      
+      pelletArray[i][j].display();
     } 
   }
 }
@@ -180,6 +202,7 @@ function createGrid() {
   for (let i = 0; i < COLS; i++) {
     for (let j = 0; j < ROWS; j++) {
       grid[i][j] = new Cell(i, j, grid[i][j]);
+      pelletArray[i][j] = new Pellet(i, j, grid[i][j]);
     }
   }
 
