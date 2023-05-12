@@ -72,12 +72,8 @@ class Pellet {
     this.i = i;
     this.j = j;
     this.wall = isWall;
-    this.pelletSize = 5;
+    this.pelletSize = 10;
     this.pelletColor = "red";
-  }
-
-  update() {
-
   }
 
   display() {
@@ -114,11 +110,13 @@ function setup() {
 
 function draw() {
   background(220);
-  //A_Star();
+  //A_Star();;
+
   displayGrid();
   displayCells();
-  displayPlayer();
+
   updatePlayer();
+  displayPlayer();
 }
 
 function removeFromArray(arr, elt){
@@ -200,9 +198,13 @@ function createGrid() {
   // }
 
   for (let i = 0; i < COLS; i++) {
+    pelletArray[i] = new Array(ROWS);
+  }
+
+  for (let i = 0; i < COLS; i++) {
     for (let j = 0; j < ROWS; j++) {
-      grid[i][j] = new Cell(i, j, grid[i][j]);
       pelletArray[i][j] = new Pellet(i, j, grid[i][j]);
+      grid[i][j] = new Cell(i, j, grid[i][j]);
     }
   }
 
@@ -314,5 +316,14 @@ function updatePlayer() {
       }
 
     }
+
+    for (let i = 0; i < COLS; i ++) {
+      for (let j = 0; j < ROWS; j ++) {
+        if (grid[i][j].wall === false && i*cellSize + cellSize/2 + this.pelletSize >= playerX - playerRadius && i*cellSize + cellSize/2 - this.pelletSize <= playerX + playerRadius && j*cellSize + cellSize/2 - this.pelletSize <= playerY + playerRadius && j*cellSize + cellSize/2 + this.pelletSize >= playerY - playerRadius) {
+          removeFromArray(pelletArray[i], pelletArray[i][j]);
+        }
+      }
+    }
+
   }
 }
