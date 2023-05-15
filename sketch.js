@@ -127,6 +127,14 @@ function removeFromArray(arr, elt){
   }
 }
 
+function changeInArray(arr, elt){
+  for (let i = arr.length - 1; i >= 0; i --) {
+    if (arr[i] === elt) {
+      arr[i] = 0;
+    }
+  }
+}
+
 function heuristic(a, b) {
   let d = abs(a.i - b.i) + abs(a.j - b.j);
   return d;
@@ -186,7 +194,9 @@ function displayGrid() {
   for (let i = 0; i < COLS; i++) {
     for (let j = 0; j < ROWS; j++) {
       grid[i][j].show(color(255));
-      pelletArray[i][j].display();
+      if(pelletArray[i][j] !== 0) {
+        pelletArray[i][j].display();
+      }
     } 
   }
 }
@@ -317,13 +327,15 @@ function updatePlayer() {
 
     }
 
-    for (let i = 0; i < COLS; i ++) {
-      for (let j = 0; j < ROWS; j ++) {
-        if (grid[i][j].wall === false && i*cellSize + cellSize/2 + this.pelletSize >= playerX - playerRadius && i*cellSize + cellSize/2 - this.pelletSize <= playerX + playerRadius && j*cellSize + cellSize/2 - this.pelletSize <= playerY + playerRadius && j*cellSize + cellSize/2 + this.pelletSize >= playerY - playerRadius) {
-          removeFromArray(pelletArray[i], pelletArray[i][j]);
-        }
+
+
+  }
+
+  for (let i = 0; i < COLS; i ++) {
+    for (let j = 0; j < ROWS; j ++) {
+      if (i*cellSize + cellSize/2 + 10 >= playerX - playerRadius && i*cellSize + cellSize/2 - 10 <= playerX + playerRadius && j*cellSize + cellSize/2 - 10 <= playerY + playerRadius && j*cellSize + cellSize/2 + 10 >= playerY - playerRadius) {
+        changeInArray(pelletArray[i], pelletArray[i][j]);
       }
     }
-
   }
 }
