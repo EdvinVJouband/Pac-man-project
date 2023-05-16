@@ -15,8 +15,9 @@ let grid = [[0, 0, 0, 0, 0], [1, 0, 1, 1, 0], [1, 0, 1, 0, 0], [1, 0, 0, 0, 0], 
 let pelletArray = [];
 let path = [];
 let nosolution = false;
-let playerX = 1, playerY = 1;
+let playerX = 0, playerY = 0;
 let playerRadius, playerDiameter;
+let gameState = "game";
 
 // stores all the nessessairy values for the cells in objects
 class Cell {
@@ -84,6 +85,23 @@ class Pellet {
   }
 }
 
+class Ghost {
+  constructor(i, j, pathFinding) {
+    this.i = i;
+    this.j = j;
+    this.pathFinding = pathFinding;
+
+  }
+
+  update() {
+
+  }
+
+  display() {
+
+  }
+}
+
 function setup() {
   createCanvas(windowWidth, windowHeight);
 
@@ -93,30 +111,36 @@ function setup() {
   else {
     cellSize = height/ROWS;
   }
-
+  
   playerDiameter = cellSize - 1;
   playerRadius = playerDiameter/2;
-
+  
   createGrid();
-
+  
   start = grid[0][0];
   end = grid[COLS - 1][ROWS - 1];
-
+  
   start.wall = false;
   end.wall = false;
-
+  
   openSet.push(start);
+  
 }
 
 function draw() {
   background(220);
-  //A_Star();;
 
-  displayGrid();
-  displayCells();
+  if (gameState === "game") {
+    //A_Star();;
+  
+    displayGrid();
+    displayCells();
+  
+    updatePlayer();
+    displayPlayer();
+  }
 
-  updatePlayer();
-  displayPlayer();
+  setSate();
 }
 
 function removeFromArray(arr, elt){
@@ -193,11 +217,22 @@ function displayGrid() {
   // displays the grid with the values from the show function
   for (let i = 0; i < COLS; i++) {
     for (let j = 0; j < ROWS; j++) {
+
       grid[i][j].show(color(255));
+
       if(pelletArray[i][j] !== 0) {
         pelletArray[i][j].display();
       }
+
     } 
+  }
+
+  for (let i = 0; i < COLS; i++) {
+    for (let j = 0; j < ROWS; j++) {
+      if (grid[i][j].wall === true) {
+        changeInArray(pelletArray[i], pelletArray[i][j]);
+      }
+    }
   }
 }
 
@@ -218,6 +253,7 @@ function createGrid() {
     }
   }
 
+  // set anu cell with a wall to change it's according pelletArray value to zero
   for (let i = 0; i < COLS; i++) {
     for (let j = 0; j < ROWS; j++) {
       grid[i][j].addNeighbors(grid);
@@ -331,6 +367,7 @@ function updatePlayer() {
 
   }
 
+  // eat pellets
   for (let i = 0; i < COLS; i ++) {
     for (let j = 0; j < ROWS; j ++) {
       if (i*cellSize + cellSize/2 + 10 >= playerX - playerRadius && i*cellSize + cellSize/2 - 10 <= playerX + playerRadius && j*cellSize + cellSize/2 - 10 <= playerY + playerRadius && j*cellSize + cellSize/2 + 10 >= playerY - playerRadius) {
@@ -338,4 +375,27 @@ function updatePlayer() {
       }
     }
   }
+}
+
+function setSate() {
+  if (gameState === "menu" && keyIsDown(13)) { //enter
+    gameState = "game";
+  }
+  
+  if (gameState === "game") {
+    let pelletCount = 0;
+
+    for (let i = 0; i < COLS; i ++) {
+      for (let j = 0; j < ROWS; j ++) {
+        if (pelletArray[i][j] !== 0) {
+          pelletCount ++;
+        }
+      }
+    }
+  
+    if (pelletCount === 0) {
+      gameState = "win";
+    }
+  }
+
 }
