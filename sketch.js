@@ -5,6 +5,7 @@
 // Extra for Experts:
 // - describe what you did to take this project "above and beyond"
 // OpenGameArt.org
+// https://dev.to/code2bits/pac-man-patterns--ghost-movement-strategy-pattern-1k1a
 
 let openSet = [], closedSet = [];
 let start, end;
@@ -18,20 +19,20 @@ let grid = [[1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1
             [1, 0, 1, 1, 1, 0, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 0, 1],
             [1, 0, 1, 1, 1, 0, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 0, 1],
             [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 1],
-            [1, 0, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1],
-            [1, 0, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1],
-            [1, 0, 1, 1, 1, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 1, 1, 0, 1],
-            [1, 0, 1, 1, 1, 0, 1, 1, 0, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 0, 1, 1, 0, 1, 1, 0, 1, 1, 0, 1],
-            [1, 0, 1, 1, 1, 0, 1, 1, 0, 1, 1, 0, 1, 0, 0, 0, 1, 0, 1, 1, 0, 1, 1, 0, 1, 1, 0, 1, 1, 0, 1],
-            [1, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 1, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 1],
-            [1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 0, 0, 0, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1],
-            [1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 0, 0, 0, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1],
-            [1, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 1, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 1],
-            [1, 0, 1, 1, 1, 0, 1, 1, 0, 1, 1, 0, 1, 0, 0, 0, 1, 0, 1, 1, 0, 1, 1, 0, 1, 1, 0, 1, 1, 0, 1],
-            [1, 0, 1, 1, 1, 0, 1, 1, 0, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 0, 1, 1, 0, 1, 1, 0, 1, 1, 0, 1],
-            [1, 0, 1, 1, 1, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 1, 1, 0, 1],
-            [1, 0, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1],
-            [1, 0, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1],
+            [1, 0, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 0, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1],
+            [1, 0, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 0, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1],
+            [1, 0, 1, 1, 1, 0, 0, 0, 0, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 0, 1, 1, 0, 0, 0, 0, 1, 1, 0, 1],
+            [1, 0, 1, 1, 1, 0, 1, 1, 0, 1, 1, 2, 1, 1, 1, 1, 1, 2, 1, 1, 0, 1, 1, 0, 1, 1, 0, 1, 1, 0, 1],
+            [1, 0, 1, 1, 1, 0, 1, 1, 0, 1, 1, 2, 1, 2, 2, 2, 1, 2, 1, 1, 0, 1, 1, 0, 1, 1, 0, 1, 1, 0, 1],
+            [1, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 2, 1, 2, 2, 2, 1, 2, 1, 1, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 1],
+            [1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 2, 1, 2, 2, 2, 1, 2, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1],
+            [1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 2, 1, 2, 2, 2, 1, 2, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1],
+            [1, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 2, 1, 2, 2, 2, 1, 2, 1, 1, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 1],
+            [1, 0, 1, 1, 1, 0, 1, 1, 0, 1, 1, 2, 1, 2, 2, 2, 1, 2, 1, 1, 0, 1, 1, 0, 1, 1, 0, 1, 1, 0, 1],
+            [1, 0, 1, 1, 1, 0, 1, 1, 0, 1, 1, 2, 1, 1, 1, 1, 1, 2, 1, 1, 0, 1, 1, 0, 1, 1, 0, 1, 1, 0, 1],
+            [1, 0, 1, 1, 1, 0, 0, 0, 0, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 0, 1, 1, 0, 0, 0, 0, 1, 1, 0, 1],
+            [1, 0, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 0, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1],
+            [1, 0, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 0, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1],
             [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 1],
             [1, 0, 1, 1, 1, 0, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 0, 1],
             [1, 0, 1, 1, 1, 0, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 0, 1],
@@ -42,13 +43,13 @@ let grid = [[1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1
 let pelletArray = [];
 let path = [];
 let nosolution = false;
-let playerX = 0, playerY = 500;
+let playerX = 0, playerY = 0;
 let playerRadius, playerDiameter;
 let gameState = "game";
 
 // stores all the nessessairy values for the cells in objects
 class Cell {
-  constructor(i, j, isWall) {
+  constructor(i, j, cellValue) {
     this.i = i;
     this.j = j;
     this.f = 0;
@@ -57,13 +58,14 @@ class Cell {
     this.neighbors = [];
     this.previous = undefined;
     this.wall = false;
+    this.cellValue = cellValue;
 
     // there is a 30% chance of a cell being generated as a wall/obstacle
     // if (random(1) < 0.3) {
     //   this.wall = true;
     // }
 
-    if (isWall === 1) {
+    if (this.cellValue === 1) {
       this.wall = true;
     }
   }
@@ -96,16 +98,17 @@ class Cell {
 }
 
 class Pellet {
-  constructor(i, j, isWall) {
+  constructor(i, j, cellValue2, empty) {
     this.i = i;
     this.j = j;
-    this.wall = isWall;
+    this.cellValue2 = cellValue2;
     this.pelletSize = 10;
     this.pelletColor = "red";
+    this.empty = empty;
   }
 
   display() {
-    if(this.wall === 0) {
+    if(this.cellValue2 === 0) {
       fill(this.pelletColor);
       circle(this.i*cellSize + cellSize/2, this.j*cellSize + cellSize/2, this.pelletSize);
     }
@@ -138,6 +141,9 @@ function setup() {
   else {
     cellSize = height/ROWS;
   }
+
+  playerX = cellSize*COLS/2;
+  playerY = cellSize*ROWS*23/31 + cellSize/2;
   
   playerDiameter = cellSize - 1;
   playerRadius = playerDiameter/2;
@@ -147,8 +153,8 @@ function setup() {
   start = grid[0][0];
   end = grid[COLS - 1][ROWS - 1];
   
-  start.wall = false;
-  end.wall = false;
+  // start.wall = false;
+  // end.wall = false;
   
   openSet.push(start);
   
@@ -256,7 +262,7 @@ function displayGrid() {
 
   for (let i = 0; i < COLS; i++) {
     for (let j = 0; j < ROWS; j++) {
-      if (grid[i][j].wall === true) {
+      if (grid[i][j].wall === true || grid[i][j].cellValue === 2) {
         changeInArray(pelletArray[i], pelletArray[i][j]);
       }
     }
@@ -390,7 +396,13 @@ function updatePlayer() {
 
     }
 
+    if (playerX < 0) {
+      playerX = cellSize*COLS;
+    }
 
+    if (playerX > cellSize*COLS) {
+      playerX = 0;
+    }
 
   }
 
