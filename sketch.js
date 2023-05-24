@@ -12,8 +12,15 @@ let start, end;
 const ROWS = 31, COLS = 28;
 let cellSize;
 // let grid = new Array(COLS);
+let pelletArray = [];
+let path = [];
+let nosolution = false;
+let playerX = 0, playerY = 0;
+let playerRadius, playerDiameter;
+let gameState = "game", gohstSate = "attack";
+let tempSuperPelletCount = 4;
 let grid = [[1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1], 
-            [1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 1], 
+            [1, 0, 0, 3, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 0, 0, 3, 1, 1, 0, 0, 0, 0, 1], 
             [1, 0, 1, 1, 1, 0, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 0, 1, 1, 0, 1, 1, 0, 1], 
             [1, 0, 1, 1, 1, 0, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 0, 0, 0, 0, 1, 1, 0, 1],
             [1, 0, 1, 1, 1, 0, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 0, 1],
@@ -38,14 +45,8 @@ let grid = [[1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1
             [1, 0, 1, 1, 1, 0, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 0, 1],
             [1, 0, 1, 1, 1, 0, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 0, 0, 0, 0, 1, 1, 0, 1],
             [1, 0, 1, 1, 1, 0, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 0, 1, 1, 0, 1, 1, 0, 1],
-            [1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 1], 
+            [1, 0, 0, 3, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 0, 0, 3, 1, 1, 0, 0, 0, 0, 1], 
             [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]];
-let pelletArray = [];
-let path = [];
-let nosolution = false;
-let playerX = 0, playerY = 0;
-let playerRadius, playerDiameter;
-let gameState = "game";
 
 // stores all the nessessairy values for the cells in objects
 class Cell {
@@ -102,16 +103,24 @@ class Pellet {
     this.i = i;
     this.j = j;
     this.cellValue2 = cellValue2;
-    this.pelletSize = 10;
+    this.pelletSize = 5;
     this.pelletColor = "red";
     this.empty = empty;
   }
 
   display() {
+    // display regular pellets
     if(this.cellValue2 === 0) {
       fill(this.pelletColor);
       circle(this.i*cellSize + cellSize/2, this.j*cellSize + cellSize/2, this.pelletSize);
     }
+
+    // display super pellets
+    if(this.cellValue2 === 3) {
+      fill(this.pelletColor);
+      circle(this.i*cellSize + cellSize/2, this.j*cellSize + cellSize/2, this.pelletSize*3);
+    }
+
   }
 }
 
@@ -396,6 +405,7 @@ function updatePlayer() {
 
     }
 
+    // set strating location
     if (playerX < 0) {
       playerX = cellSize*COLS;
     }
@@ -423,13 +433,24 @@ function setSate() {
   
   if (gameState === "game") {
     let pelletCount = 0;
+    let superPelletCount = 4;
 
     for (let i = 0; i < COLS; i ++) {
       for (let j = 0; j < ROWS; j ++) {
+        // count pellets
         if (pelletArray[i][j] !== 0) {
           pelletCount ++;
         }
+
+        // count super pellets
+        if (pelletArray[i][j].cellValue2 === 3) {
+          superPelletCount ++;
+        }
       }
+    }
+
+    if (superPelletCount !== 4) {
+      gohstSate = "runAway";
     }
   
     if (pelletCount === 0) {
