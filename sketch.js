@@ -18,7 +18,9 @@ let nosolution = false;
 let playerX = 0, playerY = 0;
 let playerRadius, playerDiameter;
 let gameState = "game", gohstSate = "attack";
-let tempSuperPelletCount = 4;
+let superPelletsLeft = 4;
+let startTime = 0, currentTime = 0;
+let superPelletCount = 0;
 let grid = [[1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1], 
             [1, 0, 0, 3, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 0, 0, 3, 1, 1, 0, 0, 0, 0, 1], 
             [1, 0, 1, 1, 1, 0, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 0, 1, 1, 0, 1, 1, 0, 1], 
@@ -433,7 +435,7 @@ function setSate() {
   
   if (gameState === "game") {
     let pelletCount = 0;
-    let superPelletCount = 4;
+    superPelletCount = 0;
 
     for (let i = 0; i < COLS; i ++) {
       for (let j = 0; j < ROWS; j ++) {
@@ -449,8 +451,17 @@ function setSate() {
       }
     }
 
-    if (superPelletCount !== 4) {
+    if (superPelletCount !== superPelletsLeft) {
       gohstSate = "runAway";
+      if (superPelletCount !== superPelletsLeft) {
+        startTime = millis();
+      }
+      superPelletsLeft = superPelletsLeft - 1;
+      currentTime = millis();
+
+      if (currentTime > startTime + 50000) {
+        gohstSate = "attack";
+      }
     }
   
     if (pelletCount === 0) {
