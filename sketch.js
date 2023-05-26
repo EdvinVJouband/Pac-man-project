@@ -15,12 +15,11 @@ let cellSize;
 let pelletArray = [];
 let path = [];
 let nosolution = false;
-let playerX = 0, playerY = 0;
+let playerX = 0, playerY = 0, gohstX = 0, gohstY = 0;
 let playerRadius, playerDiameter;
 let gameState = "game", gohstSate = "attack";
-let superPelletsLeft = 4;
 let startTime = 0, currentTime = 0;
-let superPelletCount = 0;
+let superPelletCount = 0, superPelletsLeft = 4;
 let grid = [[1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1], 
             [1, 0, 0, 3, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 0, 0, 3, 1, 1, 0, 0, 0, 0, 1], 
             [1, 0, 1, 1, 1, 0, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 0, 1, 1, 0, 1, 1, 0, 1], 
@@ -127,19 +126,30 @@ class Pellet {
 }
 
 class Ghost {
-  constructor(i, j, pathFinding) {
-    this.i = i;
-    this.j = j;
+  constructor(gohstX, gohstY, pathFinding, gohstSate1) {
+    this.gohstX = gohstX;
+    this.gohstY = gohstY;
     this.pathFinding = pathFinding;
+    this.gohstSate1 = gohstSate1;
 
   }
 
   update() {
+    this.gohstX = cellSize*COLS/2;
+    this.gohstY = cellSize*ROWS*23/31 + cellSize/2;
+    if (this.gohstX < 0) {
+      this.gohstX = cellSize*COLS;
+    }
+
+    if (this.gohstX > cellSize*COLS) {
+      this.gohstX = 0;
+    }
 
   }
 
   display() {
-
+    fill("red");
+    circle(gohstX, gohstY, playerDiameter);
   }
 }
 
@@ -352,6 +362,12 @@ function displayCells() {
 
 function displayPlayer() {
   fill("yellow");
+
+  // just for testing
+  if (gohstSate === "runAway") {
+    fill("blue");
+  }
+
   circle(playerX, playerY, playerDiameter);
 }
 
@@ -407,7 +423,7 @@ function updatePlayer() {
 
     }
 
-    // set strating location
+    // set starting location
     if (playerX < 0) {
       playerX = cellSize*COLS;
     }
@@ -453,14 +469,19 @@ function setSate() {
 
     if (superPelletCount !== superPelletsLeft) {
       gohstSate = "runAway";
-      if (superPelletCount !== superPelletsLeft) {
+      superPelletsLeft --;
+      superPelletCount --;
+      startTime = 0;
+    }
+    if(gohstSate === "runAway") {
+      if (startTime === 0) {
         startTime = millis();
       }
-      superPelletsLeft = superPelletsLeft - 1;
-      currentTime = millis();
 
-      if (currentTime > startTime + 50000) {
+      currentTime = millis();
+      if (currentTime > startTime + 10000) {
         gohstSate = "attack";
+        startTime = 0;
       }
     }
   
