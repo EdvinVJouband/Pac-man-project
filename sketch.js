@@ -20,6 +20,8 @@ let playerRadius, playerDiameter;
 let gameState = "game", gohstSate = "attack";
 let startTime = 0, currentTime = 0;
 let superPelletCount = 0, superPelletsLeft = 4;
+let blinky;
+let pathFindingState;
 let grid = [[1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1], 
             [1, 0, 0, 3, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 0, 0, 3, 1, 1, 0, 0, 0, 0, 1], 
             [1, 0, 1, 1, 1, 0, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 0, 1, 1, 0, 1, 1, 0, 1], 
@@ -126,17 +128,14 @@ class Pellet {
 }
 
 class Ghost {
-  constructor(gohstX, gohstY, pathFinding, gohstSate1) {
-    this.gohstX = gohstX;
-    this.gohstY = gohstY;
-    this.pathFinding = pathFinding;
+  constructor(gohstSate1) {
+    this.gohstX = cellSize*COLS/2;
+    this.gohstY = cellSize*ROWS*14/31 + cellSize/2;
     this.gohstSate1 = gohstSate1;
 
   }
 
   update() {
-    this.gohstX = cellSize*COLS/2;
-    this.gohstY = cellSize*ROWS*23/31 + cellSize/2;
     if (this.gohstX < 0) {
       this.gohstX = cellSize*COLS;
     }
@@ -149,7 +148,7 @@ class Ghost {
 
   display() {
     fill("red");
-    circle(gohstX, gohstY, playerDiameter);
+    circle(this.gohstX, this.gohstY, playerDiameter);
   }
 }
 
@@ -171,13 +170,15 @@ function setup() {
   
   createGrid();
   
-  start = grid[0][0];
-  end = grid[COLS - 1][ROWS - 1];
+  start = grid[1][1];
+  end = grid[COLS - 2][ROWS - 2];
   
   // start.wall = false;
   // end.wall = false;
   
   openSet.push(start);
+
+  blinky = new Ghost(1, "attack");
   
 }
 
@@ -185,13 +186,18 @@ function draw() {
   background(220);
 
   if (gameState === "game") {
-    //A_Star();;
+    if (pathFindingState !== "DONE") {
+      A_Star();
+    }
   
     displayGrid();
     displayCells();
   
     updatePlayer();
     displayPlayer();
+
+    blinky.update();
+    blinky.display();
   }
 
   setSate();
@@ -230,8 +236,10 @@ function A_Star() {
     let current = openSet[winner];
 
     if (current === end) {
-      noLoop();
+      //noLoop();
       console.log("DONE");
+      pathFindingState = "DONE";
+      return ;
     }
 
     removeFromArray(openSet, current);
@@ -264,6 +272,8 @@ function A_Star() {
   }
   else {
     //
+    // console.log("done");
+    // return "done";
   }
 }
 
@@ -317,13 +327,13 @@ function createGrid() {
 
 function displayCells() {
   // make all cells that have already been checked red
-  // for (let i = 0; i < closedSet.length; i ++) {
-  //   closedSet[i].show(color(255, 0, 0));
-  // }
+  for (let i = 0; i < closedSet.length; i ++) {
+    closedSet[i].show(color(255, 0, 0));
+  }
   // make the color of the neighbors green
-  // for (let i = 0; i < openSet.length; i ++) {
-  //   openSet[i].show(color(0, 255, 0));
-  // }
+  for (let i = 0; i < openSet.length; i ++) {
+    openSet[i].show(color(0, 255, 0));
+  }
   
   if (!nosolution) {
     let winner = 0;
@@ -335,15 +345,16 @@ function displayCells() {
     let current = openSet[winner];
 
     if (current === end) {
-      path = [];
-      let temp = current;
-      path.push(temp);
-      while (temp.previous) {
-        path.push(temp.previous);
-        temp = temp.previous;
-      }
-      noLoop();
-      console.log("DONE");
+      // path = [];
+      // let temp = current;
+      // path.push(temp);
+      // while (temp.previous) {
+      //   path.push(temp.previous);
+      //   temp = temp.previous;
+      // }
+      // noLoop();
+      // console.log("DONE");
+      // return "Done";
     }
 
     path = [];
@@ -355,9 +366,9 @@ function displayCells() {
     }
   }
 
-  // for (let i = 0; i < path.length; i ++) {
-  //   path[i].show(color(0, 0, 255));
-  // }
+  for (let i = 0; i < path.length; i ++) {
+    path[i].show(color(0, 0, 255));
+  }
 }
 
 function displayPlayer() {
