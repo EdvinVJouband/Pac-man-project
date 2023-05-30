@@ -187,7 +187,9 @@ function draw() {
 
   if (gameState === "game") {
     if (pathFindingState !== "DONE") {
-      A_Star();
+      for (let i = 0; i < 1; i ++) {
+        A_Star();
+      }
     }
   
     displayGrid();
@@ -198,6 +200,8 @@ function draw() {
 
     blinky.update();
     blinky.display();
+
+    findPlayerPosition();
   }
 
   setSate();
@@ -271,9 +275,10 @@ function A_Star() {
     }
   }
   else {
-    //
     // console.log("done");
     // return "done";
+
+
   }
 }
 
@@ -501,4 +506,15 @@ function setSate() {
     }
   }
 
+}
+
+function findPlayerPosition() {
+  for (let i = 0; i < COLS; i++) {
+    for (let j = 0; j < ROWS; j++) {
+      if (grid[i][j].wall === false && i*cellSize + cellSize > playerX && i*cellSize < playerX && j*cellSize < playerY && j*cellSize + cellSize > playerY) {
+        fill("purple");
+        rect(grid[i], grid[j], cellSize, cellSize);
+      }
+    }
+  }
 }
