@@ -129,7 +129,8 @@ class Pellet {
 
 class Ghost {
   constructor(gohstSate1) {
-    this.gohstX = cellSize*COLS/2;
+    // the - 1 for the positions is so that the gohst doesint start between cells
+    this.gohstX = cellSize*COLS/2 - 1;
     this.gohstY = cellSize*ROWS*14/31 + cellSize/2;
     this.gohstSate1 = gohstSate1;
 
@@ -162,7 +163,8 @@ function setup() {
     cellSize = height/ROWS;
   }
 
-  playerX = cellSize*COLS/2;
+  // the - 1 for the positions is so that the player doesint start between cells
+  playerX = cellSize*COLS/2 - 1;
   playerY = cellSize*ROWS*23/31 + cellSize/2;
   
   playerDiameter = cellSize - 1;
@@ -186,6 +188,7 @@ function draw() {
   background(220);
 
   if (gameState === "game") {
+
     if (pathFindingState !== "DONE") {
       for (let i = 0; i < 1; i ++) {
         A_Star();
@@ -194,14 +197,15 @@ function draw() {
   
     displayGrid();
     displayCells();
+
+    findPlayerPosition();
+    findGhostPosition();
   
     updatePlayer();
     displayPlayer();
 
     blinky.update();
     blinky.display();
-
-    findPlayerPosition();
   }
 
   setSate();
@@ -511,9 +515,20 @@ function setSate() {
 function findPlayerPosition() {
   for (let i = 0; i < COLS; i++) {
     for (let j = 0; j < ROWS; j++) {
-      if (grid[i][j].wall === false && i*cellSize + cellSize > playerX && i*cellSize < playerX && j*cellSize < playerY && j*cellSize + cellSize > playerY) {
+      if (i*cellSize + cellSize > playerX && i*cellSize < playerX && j*cellSize < playerY && j*cellSize + cellSize > playerY) {
         fill("purple");
-        rect(grid[i], grid[j], cellSize, cellSize);
+        rect(grid[i][j].i * cellSize, grid[i][j].j * cellSize, cellSize - 1, cellSize - 1);
+      }
+    }
+  }
+}
+
+function findGhostPosition() {
+  for (let i = 0; i < COLS; i++) {
+    for (let j = 0; j < ROWS; j++) {
+      if (i*cellSize + cellSize > blinky.gohstX && i*cellSize < blinky.gohstX && j*cellSize < blinky.gohstY && j*cellSize + cellSize > blinky.gohstY) {
+        fill("purple");
+        rect(grid[i][j].i * cellSize, grid[i][j].j * cellSize, cellSize - 1, cellSize - 1);
       }
     }
   }
