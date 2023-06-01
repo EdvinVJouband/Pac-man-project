@@ -13,7 +13,7 @@ const ROWS = 31, COLS = 28;
 let cellSize;
 // let grid = new Array(COLS);
 let pelletArray = [];
-let path = [];
+let path = [], tempPath = [];
 let nosolution = false;
 let playerX = 0, playerY = 0, gohstX = 0, gohstY = 0;
 let playerRadius, playerDiameter;
@@ -22,6 +22,7 @@ let startTime = 0, currentTime = 0;
 let superPelletCount = 0, superPelletsLeft = 4;
 let blinky;
 let pathFindingState;
+let playerCell, ghostCell;
 let grid = [[1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1], 
             [1, 0, 0, 3, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 0, 0, 3, 1, 1, 0, 0, 0, 0, 1], 
             [1, 0, 1, 1, 1, 0, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 0, 1, 1, 0, 1, 1, 0, 1], 
@@ -35,8 +36,8 @@ let grid = [[1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1
             [1, 0, 1, 1, 1, 0, 1, 1, 0, 1, 1, 2, 1, 1, 1, 1, 1, 2, 1, 1, 0, 1, 1, 0, 1, 1, 0, 1, 1, 0, 1],
             [1, 0, 1, 1, 1, 0, 1, 1, 0, 1, 1, 2, 1, 2, 2, 2, 1, 2, 1, 1, 0, 1, 1, 0, 1, 1, 0, 1, 1, 0, 1],
             [1, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 2, 1, 2, 2, 2, 1, 2, 1, 1, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 1],
-            [1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 2, 1, 2, 2, 2, 1, 2, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1],
-            [1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 2, 1, 2, 2, 2, 1, 2, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1],
+            [1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 1, 2, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1],
+            [1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 1, 2, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1],
             [1, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 2, 1, 2, 2, 2, 1, 2, 1, 1, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 1],
             [1, 0, 1, 1, 1, 0, 1, 1, 0, 1, 1, 2, 1, 2, 2, 2, 1, 2, 1, 1, 0, 1, 1, 0, 1, 1, 0, 1, 1, 0, 1],
             [1, 0, 1, 1, 1, 0, 1, 1, 0, 1, 1, 2, 1, 1, 1, 1, 1, 2, 1, 1, 0, 1, 1, 0, 1, 1, 0, 1, 1, 0, 1],
@@ -172,16 +173,23 @@ function setup() {
   
   createGrid();
   
-  start = grid[1][1];
-  end = grid[COLS - 2][ROWS - 2];
+  // start = grid[1][1];
+  // end = grid[COLS - 2][ROWS - 2];
   
   // start.wall = false;
   // end.wall = false;
   
-  openSet.push(start);
+  // openSet.push(start);
 
   blinky = new Ghost(1, "attack");
+
+  findPlayerPosition();
+  findGhostPosition();
   
+  start = ghostCell;
+  end = playerCell;
+
+  openSet.push(start);
 }
 
 function draw() {
@@ -345,15 +353,16 @@ function displayCells() {
   }
   
   if (!nosolution) {
-    let winner = 0;
-    for (let i = 0; i < openSet.length; i ++) {
-      if (openSet[i].f < openSet[winner].f) {
-        winner = i;
+    if (openSet.length > 0) {
+      let winner = 0;
+      for (let i = 0; i < openSet.length; i ++) {
+        if (openSet[i].f < openSet[winner].f) {
+          winner = i;
+        }
       }
-    }
-    let current = openSet[winner];
+      let current = openSet[winner];
 
-    if (current === end) {
+      //if (current === end) {
       // path = [];
       // let temp = current;
       // path.push(temp);
@@ -364,19 +373,28 @@ function displayCells() {
       // noLoop();
       // console.log("DONE");
       // return "Done";
-    }
+      //}
 
-    path = [];
-    let temp = current;
-    path.push(temp);
-    while (temp.previous) {
-      path.push(temp.previous);
-      temp = temp.previous;
+      path = [];
+      let temp = current;
+      path.push(temp);
+      while (temp.previous) {
+        path.push(temp.previous);
+        temp = temp.previous;
+      }
     }
   }
 
   for (let i = 0; i < path.length; i ++) {
     path[i].show(color(0, 0, 255));
+  }
+
+  if (pathFindingState === "DONE") {
+    tempPath = [...path];
+    path = [];
+    
+    // closedSet = [];
+    // openSet = [];
   }
 }
 
@@ -518,6 +536,7 @@ function findPlayerPosition() {
       if (i*cellSize + cellSize > playerX && i*cellSize < playerX && j*cellSize < playerY && j*cellSize + cellSize > playerY) {
         fill("purple");
         rect(grid[i][j].i * cellSize, grid[i][j].j * cellSize, cellSize - 1, cellSize - 1);
+        playerCell = grid[i][j];
       }
     }
   }
@@ -529,6 +548,7 @@ function findGhostPosition() {
       if (i*cellSize + cellSize > blinky.gohstX && i*cellSize < blinky.gohstX && j*cellSize < blinky.gohstY && j*cellSize + cellSize > blinky.gohstY) {
         fill("purple");
         rect(grid[i][j].i * cellSize, grid[i][j].j * cellSize, cellSize - 1, cellSize - 1);
+        ghostCell = grid[i][j];
       }
     }
   }
