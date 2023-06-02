@@ -17,7 +17,7 @@ let path = [], tempPath = [];
 let nosolution = false;
 let playerX = 0, playerY = 0, gohstX = 0, gohstY = 0;
 let playerRadius, playerDiameter;
-let gameState = "game", gohstSate = "attack";
+let gameState = "game", ghostSate = "attack";
 let startTime = 0, currentTime = 0;
 let superPelletCount = 0, superPelletsLeft = 4;
 let blinky;
@@ -129,28 +129,36 @@ class Pellet {
 }
 
 class Ghost {
-  constructor(gohstSate1) {
+  constructor(ghostSate1) {
     // the - 1 for the positions is so that the gohst doesint start between cells
-    this.gohstX = cellSize*COLS/2 - 1;
-    this.gohstY = cellSize*ROWS*14/31 + cellSize/2;
-    this.gohstSate1 = gohstSate1;
+    this.ghostX = cellSize*COLS/2 - 1;
+    this.ghostY = cellSize*ROWS*14/31 + cellSize/2;
+    this.gohstSate1 = ghostSate1;
 
   }
 
   update() {
-    if (this.gohstX < 0) {
-      this.gohstX = cellSize*COLS;
+    if (this.ghostX < 0) {
+      this.ghostX = cellSize*COLS;
     }
 
-    if (this.gohstX > cellSize*COLS) {
-      this.gohstX = 0;
+    if (this.ghostX > cellSize*COLS) {
+      this.ghostX = 0;
     }
+
+    // if (ghostSate === "attack") {
+    //   for (let i = 0; i < tempPath.length; i ++) {
+    //     if (this.ghostY === tempPath[i].j) {
+    //       console.log( "hello");
+    //     }
+    //   }
+    // }
 
   }
 
   display() {
     fill("red");
-    circle(this.gohstX, this.gohstY, playerDiameter);
+    circle(this.ghostX, this.ghostY, playerDiameter);
   }
 }
 
@@ -214,6 +222,17 @@ function draw() {
 
     blinky.update();
     blinky.display();
+
+    if (pathFindingState === "DONE") {
+      pathFindingState = "START";
+      closedSet = [];
+      openSet = [];
+
+      start = ghostCell;
+      end = playerCell;
+
+      openSet.push(start);
+    }
   }
 
   setSate();
@@ -392,9 +411,6 @@ function displayCells() {
   if (pathFindingState === "DONE") {
     tempPath = [...path];
     path = [];
-    
-    // closedSet = [];
-    // openSet = [];
   }
 }
 
@@ -402,7 +418,7 @@ function displayPlayer() {
   fill("yellow");
 
   // just for testing
-  if (gohstSate === "runAway") {
+  if (ghostSate === "runAway") {
     fill("blue");
   }
 
@@ -506,19 +522,19 @@ function setSate() {
     }
 
     if (superPelletCount !== superPelletsLeft) {
-      gohstSate = "runAway";
+      ghostSate = "runAway";
       superPelletsLeft --;
       superPelletCount --;
       startTime = 0;
     }
-    if(gohstSate === "runAway") {
+    if(ghostSate === "runAway") {
       if (startTime === 0) {
         startTime = millis();
       }
 
       currentTime = millis();
       if (currentTime > startTime + 10000) {
-        gohstSate = "attack";
+        ghostSate = "attack";
         startTime = 0;
       }
     }
@@ -545,7 +561,7 @@ function findPlayerPosition() {
 function findGhostPosition() {
   for (let i = 0; i < COLS; i++) {
     for (let j = 0; j < ROWS; j++) {
-      if (i*cellSize + cellSize > blinky.gohstX && i*cellSize < blinky.gohstX && j*cellSize < blinky.gohstY && j*cellSize + cellSize > blinky.gohstY) {
+      if (i*cellSize + cellSize > blinky.ghostX && i*cellSize < blinky.ghostX && j*cellSize < blinky.ghostY && j*cellSize + cellSize > blinky.ghostY) {
         fill("purple");
         rect(grid[i][j].i * cellSize, grid[i][j].j * cellSize, cellSize - 1, cellSize - 1);
         ghostCell = grid[i][j];
