@@ -130,7 +130,7 @@ class Pellet {
 
 class Ghost {
   constructor(ghostSate1) {
-    // the - 1 for the positions is so that the gohst doesint start between cells
+    // the - 1 for the positions is so that the ghost doesint start between cells
     this.ghostX = cellSize*COLS/2 - 1;
     this.ghostY = cellSize*ROWS*14/31 + cellSize/2;
     this.gohstSate1 = ghostSate1;
@@ -138,18 +138,22 @@ class Ghost {
   }
 
   update() {
-    if (this.ghostX < 0) {
-      this.ghostX = cellSize*COLS;
-    }
-
-    if (this.ghostX > cellSize*COLS) {
-      this.ghostX = 0;
-    }
-
+    // move towards the first cell in the path
     // if (ghostSate === "attack") {
     //   for (let i = 0; i < tempPath.length; i ++) {
-    //     if (this.ghostY === tempPath[i].j) {
-    //       console.log( "hello");
+
+    //     if (this.ghostY !== tempPath[i].j && tempPath[i].j !== undefined) {
+    //       let pathY = round(tempPath[i].j*cellSize, 0);
+    //       let ghostY = round(this.ghostY, 0);
+
+    //       let difference = ghostY - pathY;
+
+    //       while (difference !== 0) {
+    //         if (difference < 0) {
+    //           this.ghostY ++;
+    //           gohstY ++;
+    //         }
+    //       }
     //     }
     //   }
     // }
@@ -159,6 +163,16 @@ class Ghost {
   display() {
     fill("red");
     circle(this.ghostX, this.ghostY, playerDiameter);
+  }
+
+  setup() {
+    if (this.ghostX < 0) {
+      this.ghostX = cellSize*COLS;
+    }
+
+    if (this.ghostX > cellSize*COLS) {
+      this.ghostX = 0;
+    }
   }
 }
 
@@ -220,6 +234,7 @@ function draw() {
     updatePlayer();
     displayPlayer();
 
+    blinky.setup();
     blinky.update();
     blinky.display();
 
