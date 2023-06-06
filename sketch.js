@@ -139,24 +139,25 @@ class Ghost {
 
   update() {
     // move towards the first cell in the path
-    // if (ghostSate === "attack") {
-    //   for (let i = 0; i < tempPath.length; i ++) {
+    if (ghostSate === "attack" && tempPath[1] !== undefined) {
+      for (let i = 0; i < tempPath.length; i ++) {
 
-    //     if (this.ghostY !== tempPath[i].j && tempPath[i].j !== undefined) {
-    //       let pathY = round(tempPath[i].j*cellSize, 0);
-    //       let ghostY = round(this.ghostY, 0);
+        if (this.ghostY !== tempPath[i].j*cellSize + cellSize/2) {
 
-    //       let difference = ghostY - pathY;
+          // let pathY = round(tempPath[i].j*cellSize + cellSize/2, 0);
+          // let ghostY = round(this.ghostY, 0);
 
-    //       while (difference !== 0) {
-    //         if (difference < 0) {
-    //           this.ghostY ++;
-    //           gohstY ++;
-    //         }
-    //       }
-    //     }
-    //   }
-    // }
+          //let difference = ghostY - pathY;
+
+          let difference = this.ghostY - tempPath[i].j*cellSize + cellSize/2;
+
+          while (difference < 0) {
+            this.ghostY ++;
+            difference = this.ghostY - tempPath[i].j*cellSize + cellSize/2;
+          }
+        }
+      }
+    }
 
   }
 
