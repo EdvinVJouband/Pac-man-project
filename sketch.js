@@ -144,16 +144,10 @@ class Ghost {
 
         if (this.ghostY !== tempPath[i].j*cellSize + cellSize/2) {
 
-          // let pathY = round(tempPath[i].j*cellSize + cellSize/2, 0);
-          // let ghostY = round(this.ghostY, 0);
+          let difference = round(this.ghostY, 0) - round(tempPath[i].j*cellSize + cellSize/2, 0);
 
-          //let difference = ghostY - pathY;
-
-          let difference = this.ghostY - tempPath[i].j*cellSize + cellSize/2;
-
-          while (difference < 0) {
+          if (difference < 0) {
             this.ghostY ++;
-            difference = this.ghostY - tempPath[i].j*cellSize + cellSize/2;
           }
         }
       }
@@ -249,6 +243,22 @@ function draw() {
 
       openSet.push(start);
     }
+
+    // if (end === start) {
+    //   pathFindingState = "PAUSED";
+    // }
+
+    // if (pathFindingState === "PAUSED") {
+    //   closedSet = [];
+    //   openSet = [];
+
+    //   start = ghostCell;
+    //   end = playerCell;
+    // }
+
+    // if (pathFindingState === "PAUSED" && playerCell !== ghostCell) {
+    //   pathFindingState === "DONE";
+    // }
   }
 
   setSate();
