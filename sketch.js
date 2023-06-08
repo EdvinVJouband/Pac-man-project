@@ -21,7 +21,7 @@ let gameState = "game", ghostSate = "attack";
 let startTime = 0, currentTime = 0;
 let superPelletCount = 0, superPelletsLeft = 4;
 let blinky;
-let pathFindingState;
+let pathFindingState = "START";
 let playerCell, ghostCell;
 let grid = [[1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1], 
             [1, 0, 0, 3, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 0, 0, 3, 1, 1, 0, 0, 0, 0, 1], 
@@ -214,7 +214,7 @@ function draw() {
 
   if (gameState === "game") {
 
-    if (pathFindingState !== "DONE") {
+    if (pathFindingState === "START") {
       for (let i = 0; i < 1; i ++) {
         A_Star();
       }
@@ -233,8 +233,9 @@ function draw() {
     blinky.update();
     blinky.display();
 
-    if (pathFindingState === "DONE") {
+    if (pathFindingState === "DONE" && playerCell === ghostCell) {
       pathFindingState = "START";
+
       closedSet = [];
       openSet = [];
 
@@ -243,22 +244,6 @@ function draw() {
 
       openSet.push(start);
     }
-
-    // if (end === start) {
-    //   pathFindingState = "PAUSED";
-    // }
-
-    // if (pathFindingState === "PAUSED") {
-    //   closedSet = [];
-    //   openSet = [];
-
-    //   start = ghostCell;
-    //   end = playerCell;
-    // }
-
-    // if (pathFindingState === "PAUSED" && playerCell !== ghostCell) {
-    //   pathFindingState === "DONE";
-    // }
   }
 
   setSate();
