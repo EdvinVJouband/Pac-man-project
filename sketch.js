@@ -140,14 +140,17 @@ class Ghost {
   update() {
     // move towards the first cell in the path
     if (ghostSate === "attack" && tempPath[1] !== undefined) {
-      for (let i = 0; i < tempPath.length; i ++) {
+      for (let i = tempPath.length - 1; i >= 0; i --) {
 
         if (this.ghostY !== tempPath[i].j*cellSize + cellSize/2) {
 
-          let difference = round(this.ghostY, 0) - round(tempPath[i].j*cellSize + cellSize/2, 0);
+          let difference = this.ghostY - tempPath[i].j*cellSize + cellSize/2;
 
           if (difference < 0) {
             this.ghostY ++;
+          }
+          else if (difference > 0) {
+            this.ghostY --;
           }
         }
       }
@@ -230,19 +233,22 @@ function draw() {
     displayPlayer();
 
     blinky.setup();
-    blinky.update();
     blinky.display();
 
-    if (pathFindingState === "DONE" && playerCell === ghostCell) {
-      pathFindingState = "START";
+    if (pathFindingState === "DONE") {
+      blinky.update();
 
-      closedSet = [];
-      openSet = [];
+      // if (ghostCell === tempPath[tempPath.length - 1]) {
+      //   pathFindingState = "START";
 
-      start = ghostCell;
-      end = playerCell;
+      //   start = ghostCell;
+      //   end = playerCell;
 
-      openSet.push(start);
+      //   closedSet = [];
+      //   openSet = [];
+  
+      //   openSet.push(start);
+      // }
     }
   }
 
