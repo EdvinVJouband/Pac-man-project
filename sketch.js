@@ -23,34 +23,35 @@ let superPelletCount = 0, superPelletsLeft = 4;
 let blinky;
 let pathFindingState = "START";
 let playerCell, ghostCell;
+let currentCell = 0;
 let grid = [[1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1], 
-            [1, 0, 0, 3, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 0, 0, 3, 1, 1, 0, 0, 0, 0, 1], 
-            [1, 0, 1, 1, 1, 0, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 0, 1, 1, 0, 1, 1, 0, 1], 
-            [1, 0, 1, 1, 1, 0, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 0, 0, 0, 0, 1, 1, 0, 1],
-            [1, 0, 1, 1, 1, 0, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 0, 1],
-            [1, 0, 1, 1, 1, 0, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 0, 1],
-            [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 1],
-            [1, 0, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 0, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1],
-            [1, 0, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 0, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1],
-            [1, 0, 1, 1, 1, 0, 0, 0, 0, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 0, 1, 1, 0, 0, 0, 0, 1, 1, 0, 1],
-            [1, 0, 1, 1, 1, 0, 1, 1, 0, 1, 1, 2, 1, 1, 1, 1, 1, 2, 1, 1, 0, 1, 1, 0, 1, 1, 0, 1, 1, 0, 1],
-            [1, 0, 1, 1, 1, 0, 1, 1, 0, 1, 1, 2, 1, 2, 2, 2, 1, 2, 1, 1, 0, 1, 1, 0, 1, 1, 0, 1, 1, 0, 1],
-            [1, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 2, 1, 2, 2, 2, 1, 2, 1, 1, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 1],
-            [1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 1, 2, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1],
-            [1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 1, 2, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1],
-            [1, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 2, 1, 2, 2, 2, 1, 2, 1, 1, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 1],
-            [1, 0, 1, 1, 1, 0, 1, 1, 0, 1, 1, 2, 1, 2, 2, 2, 1, 2, 1, 1, 0, 1, 1, 0, 1, 1, 0, 1, 1, 0, 1],
-            [1, 0, 1, 1, 1, 0, 1, 1, 0, 1, 1, 2, 1, 1, 1, 1, 1, 2, 1, 1, 0, 1, 1, 0, 1, 1, 0, 1, 1, 0, 1],
-            [1, 0, 1, 1, 1, 0, 0, 0, 0, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 0, 1, 1, 0, 0, 0, 0, 1, 1, 0, 1],
-            [1, 0, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 0, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1],
-            [1, 0, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 0, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1],
-            [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 1],
-            [1, 0, 1, 1, 1, 0, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 0, 1],
-            [1, 0, 1, 1, 1, 0, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 0, 1],
-            [1, 0, 1, 1, 1, 0, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 0, 0, 0, 0, 1, 1, 0, 1],
-            [1, 0, 1, 1, 1, 0, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 0, 1, 1, 0, 1, 1, 0, 1],
-            [1, 0, 0, 3, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 0, 0, 3, 1, 1, 0, 0, 0, 0, 1], 
-            [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]];
+  [1, 0, 0, 3, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 0, 0, 3, 1, 1, 0, 0, 0, 0, 1], 
+  [1, 0, 1, 1, 1, 0, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 0, 1, 1, 0, 1, 1, 0, 1], 
+  [1, 0, 1, 1, 1, 0, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 0, 0, 0, 0, 1, 1, 0, 1],
+  [1, 0, 1, 1, 1, 0, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 0, 1],
+  [1, 0, 1, 1, 1, 0, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 0, 1],
+  [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 1],
+  [1, 0, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 0, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1],
+  [1, 0, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 0, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1],
+  [1, 0, 1, 1, 1, 0, 0, 0, 0, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 0, 1, 1, 0, 0, 0, 0, 1, 1, 0, 1],
+  [1, 0, 1, 1, 1, 0, 1, 1, 0, 1, 1, 2, 1, 1, 1, 1, 1, 2, 1, 1, 0, 1, 1, 0, 1, 1, 0, 1, 1, 0, 1],
+  [1, 0, 1, 1, 1, 0, 1, 1, 0, 1, 1, 2, 1, 2, 2, 2, 1, 2, 1, 1, 0, 1, 1, 0, 1, 1, 0, 1, 1, 0, 1],
+  [1, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 2, 1, 2, 2, 2, 1, 2, 1, 1, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 1],
+  [1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 1, 2, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1],
+  [1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 1, 2, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1],
+  [1, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 2, 1, 2, 2, 2, 1, 2, 1, 1, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 1],
+  [1, 0, 1, 1, 1, 0, 1, 1, 0, 1, 1, 2, 1, 2, 2, 2, 1, 2, 1, 1, 0, 1, 1, 0, 1, 1, 0, 1, 1, 0, 1],
+  [1, 0, 1, 1, 1, 0, 1, 1, 0, 1, 1, 2, 1, 1, 1, 1, 1, 2, 1, 1, 0, 1, 1, 0, 1, 1, 0, 1, 1, 0, 1],
+  [1, 0, 1, 1, 1, 0, 0, 0, 0, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 0, 1, 1, 0, 0, 0, 0, 1, 1, 0, 1],
+  [1, 0, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 0, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1],
+  [1, 0, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 0, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1],
+  [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 1],
+  [1, 0, 1, 1, 1, 0, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 0, 1],
+  [1, 0, 1, 1, 1, 0, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 0, 1],
+  [1, 0, 1, 1, 1, 0, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 0, 0, 0, 0, 1, 1, 0, 1],
+  [1, 0, 1, 1, 1, 0, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 0, 1, 1, 0, 1, 1, 0, 1],
+  [1, 0, 0, 3, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 0, 0, 3, 1, 1, 0, 0, 0, 0, 1], 
+  [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]];
 
 // stores all the nessessairy values for the cells in objects
 class Cell {
@@ -130,39 +131,58 @@ class Pellet {
 
 class Ghost {
   constructor(ghostSate1) {
-    // the - 1 for the positions is so that the ghost doesint start between cells
-    this.ghostX = cellSize*COLS/2 - 1;
+    // the - 1 for the positions is so that the ghost doesint start on the edge of two cells
+    this.ghostX = cellSize*COLS/2 + cellSize/2 - 1;
     this.ghostY = cellSize*ROWS*14/31 + cellSize/2;
     this.gohstSate1 = ghostSate1;
 
   }
 
   update() {
-    // move towards the first cell in the path
-    // if (ghostSate === "attack" && tempPath[1] !== undefined) {
-    for (let i = tempPath.length - 1; i >= 0; i --) {
+    // move through each cell in the path
 
-      if (ghostCell.j !== tempPath[i].j) {
-
-        // let difference = this.ghostY - tempPath[i].j*cellSize + cellSize/2;
-
-        if (ghostCell.j < tempPath[i].j) {
-          console.log(ghostCell.j);
-          console.log(tempPath[i].j);
-          console.log("down");
-          this.ghostY -= cellSize;
-        }
-        else if (ghostCell.j > tempPath[i].j) {
-          console.log(ghostCell.j);
-          console.log(tempPath[i].j);
-          console.log("up");
-          this.ghostY += cellSize;
-        }
-      }
-
-      findGhostPosition();
+    if (currentCell === 0) {
+      currentCell = tempPath.length - 1;
     }
-    // }
+
+    if (ghostCell.j !== tempPath[currentCell].j) {
+
+      if (ghostCell.j > tempPath[currentCell].j) {
+        console.log(ghostCell.j);
+        console.log(tempPath[currentCell].j);
+        console.log("up");
+        this.ghostY -= cellSize/10;
+
+      }
+      else if (ghostCell.j < tempPath[currentCell].j) {
+        console.log(ghostCell.j);
+        console.log(tempPath[currentCell].j);
+        console.log("down");
+        this.ghostY += cellSize/10;
+      }
+    }
+
+    if (ghostCell.i !== tempPath[currentCell].i) {
+
+      if (ghostCell.i > tempPath[currentCell].i) {
+        console.log(ghostCell.i);
+        console.log(tempPath[currentCell].i);
+        console.log("left");
+        this.ghostX -= cellSize/10;
+      }
+      else if (ghostCell.i < tempPath[currentCell].i) {
+        console.log(ghostCell.i);
+        console.log(tempPath[currentCell].i);
+        console.log("right");
+        this.ghostX += cellSize/10;
+      }
+    }
+
+    if (ghostCell.j !== tempPath[currentCell].j && ghostCell.i !== tempPath[currentCell].i) {
+      currentCell --;
+    }
+
+    findGhostPosition();
 
   }
 
@@ -192,7 +212,7 @@ function setup() {
     cellSize = height/ROWS;
   }
 
-  // the - 1 for the positions is so that the player doesint start between cells
+  // the - 1 for the positions is so that the player doesint start on the edge of two cells
   playerX = cellSize*COLS/2 - 1;
   playerY = cellSize*ROWS*23/31 + cellSize/2;
   
@@ -595,3 +615,78 @@ function findGhostPosition() {
     }
   }
 }
+
+// if (currentCell === 0) {
+//   currentCell = tempPath.length - 1;
+// }
+
+// if (ghostCell.j !== tempPath[currentCell].j) {
+
+//   if (ghostCell.j > tempPath[currentCell].j) {
+//     console.log(ghostCell.j);
+//     console.log(tempPath[currentCell].j);
+//     console.log("up");
+//     this.ghostY -= cellSize/10;
+
+//   }
+//   else if (ghostCell.j < tempPath[currentCell].j) {
+//     console.log(ghostCell.j);
+//     console.log(tempPath[currentCell].j);
+//     console.log("down");
+//     this.ghostY += cellSize/10;
+//   }
+// }
+
+// if (ghostCell.i !== tempPath[currentCell].i) {
+
+//   if (ghostCell.i > tempPath[currentCell].i) {
+//     console.log(ghostCell.i);
+//     console.log(tempPath[currentCell].i);
+//     console.log("left");
+//     this.ghostX -= cellSize/10;
+//   }
+//   else if (ghostCell.i < tempPath[currentCell].i) {
+//     console.log(ghostCell.i);
+//     console.log(tempPath[currentCell].i);
+//     console.log("right");
+//     this.ghostX += cellSize/10;
+//   }
+// }
+
+// for (let i = tempPath.length - 1; i >= 0; i --) {
+
+//   if (ghostCell.j !== tempPath[i].j) {
+
+//     if (ghostCell.j > tempPath[i].j) {
+//       console.log(ghostCell.j);
+//       console.log(tempPath[i].j);
+//       console.log("up");
+//       this.ghostY -= cellSize;
+
+//     }
+//     else if (ghostCell.j < tempPath[i].j) {
+//       console.log(ghostCell.j);
+//       console.log(tempPath[i].j);
+//       console.log("down");
+//       this.ghostY += cellSize;
+//     }
+//   }
+
+//   if (ghostCell.i !== tempPath[i].i) {
+
+//     if (ghostCell.i > tempPath[i].i) {
+//       console.log(ghostCell.i);
+//       console.log(tempPath[i].i);
+//       console.log("left");
+//       this.ghostX -= cellSize;
+//     }
+//     else if (ghostCell.i < tempPath[i].i) {
+//       console.log(ghostCell.i);
+//       console.log(tempPath[i].i);
+//       console.log("right");
+//       this.ghostX += cellSize;
+//     }
+//   }
+
+//   findGhostPosition();
+// }
