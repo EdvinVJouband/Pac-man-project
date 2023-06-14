@@ -266,8 +266,16 @@ function draw() {
     blinky.display();
 
     if (pathFindingState === "DONE") {
-      if (playerCell !== ghostCell) {
-        blinky.update();
+      blinky.update();
+      if (ghostCell.j === end.j && ghostCell.i === end.i) {
+         pathFindingState = "";
+        // start = ghostCell;
+        // end = playerCell;
+
+        // closedSet = [];
+        // openSet = [];
+  
+        // openSet.push(start);
       }
 
       //pathFindingState = "";
