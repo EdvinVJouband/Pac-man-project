@@ -242,9 +242,7 @@ function draw() {
   if (gameState === "game") {
 
     if (pathFindingState === "START") {
-      for (let i = 0; i < 1; i ++) {
-        A_Star();
-      }
+      A_Star();
     }
   
     displayGrid();
@@ -261,29 +259,22 @@ function draw() {
     if (pathFindingState === "DONE") {
       blinky.update();
       if (ghostCell.j === end.j && ghostCell.i === end.i) {
-         pathFindingState = "";
-        // start = ghostCell;
-        // end = playerCell;
-
-        // closedSet = [];
-        // openSet = [];
-  
-        // openSet.push(start);
+         pathFindingState = "OVER";
       }
+    }
 
-      //pathFindingState = "";
-
-      // if (ghostCell === tempPath[tempPath.length - 1]) {
-      //   pathFindingState = "START";
-
-      //   start = ghostCell;
-      //   end = playerCell;
-
-      //   closedSet = [];
-      //   openSet = [];
+    if (pathFindingState === "OVER") {
+      path = [];
   
-      //   openSet.push(start);
-      // }
+      start = ghostCell;
+      end = playerCell;
+  
+      closedSet = [];
+      openSet = [];
+  
+      openSet.push(start);
+
+      pathFindingState === "START"
     }
   }
 
@@ -613,10 +604,13 @@ function findPlayerPosition() {
 function findGhostPosition() {
   for (let i = 0; i < COLS; i++) {
     for (let j = 0; j < ROWS; j++) {
-      if (i*cellSize + cellSize > blinky.ghostX && i*cellSize < blinky.ghostX && j*cellSize < blinky.ghostY && j*cellSize + cellSize > blinky.ghostY) {
+      if (abs(i * cellSize + cellSize/2 - 1 - blinky.ghostX) < cellSize/10 && abs(j * cellSize + cellSize/2 - 1 - blinky.ghostY) < cellSize/10) {
         fill("purple");
         rect(grid[i][j].i * cellSize, grid[i][j].j * cellSize, cellSize - 1, cellSize - 1);
         ghostCell = grid[i][j];
+
+        blinky.ghostX = i * cellSize + cellSize/2 - 1;
+        blinky.ghostY = j * cellSize + cellSize/2 - 1;
       }
     }
   }
