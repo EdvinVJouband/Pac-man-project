@@ -15,7 +15,7 @@ let cellSize;
 let pelletArray = [];
 let path = [], tempPath = [];
 let nosolution = false;
-let playerX = 0, playerY = 0, gohstX = 0, gohstY = 0;
+let playerX = 0, playerY = 0, gohstX = 0, gohstY = 0; //tempGhostX = 0, tempGhostY = 0;
 let playerRadius, playerDiameter;
 let gameState = "game", ghostSate = "attack";
 let startTime = 0, currentTime = 0;
@@ -148,38 +148,27 @@ class Ghost {
     if (ghostCell.j !== tempPath[currentCell].j) {
 
       if (ghostCell.j > tempPath[currentCell].j) {
-        console.log(ghostCell.j);
-        console.log(tempPath[currentCell].j);
-        console.log("up");
         this.ghostY -= cellSize/10;
-
       }
       else if (ghostCell.j < tempPath[currentCell].j) {
-        console.log(ghostCell.j);
-        console.log(tempPath[currentCell].j);
-        console.log("down");
         this.ghostY += cellSize/10;
       }
     }
 
     if (ghostCell.i !== tempPath[currentCell].i) {
 
-      if (ghostCell.i > tempPath[currentCell].i) {
-        console.log(ghostCell.i);
-        console.log(tempPath[currentCell].i);
-        console.log("left");
+      if (ghostCell.i > tempPath[currentCell].i) {;
         this.ghostX -= cellSize/10;
       }
       else if (ghostCell.i < tempPath[currentCell].i) {
-        console.log(ghostCell.i);
-        console.log(tempPath[currentCell].i);
-        console.log("right");
         this.ghostX += cellSize/10;
       }
     }
 
     if (ghostCell.i * cellSize + cellSize/2 === tempPath[currentCell].i * cellSize + cellSize/2 && ghostCell.j *cellSize - cellSize/2 === tempPath[currentCell].j * cellSize - cellSize/2) {
       currentCell --;
+      //tempGhostX = this.ghostX;
+      //tempGhostY = this.ghostY;
     }
 
     // ghostCell.j === tempPath[currentCell].j && ghostCell.i === tempPath[currentCell].i
@@ -201,6 +190,9 @@ class Ghost {
     if (this.ghostX > cellSize*COLS) {
       this.ghostX = 0;
     }
+
+    //tempGhostX = this.ghostX;
+    //tempGhostY = this.ghostY;
   }
 }
 
@@ -240,6 +232,8 @@ function setup() {
   end = playerCell;
 
   openSet.push(start);
+
+  blinky.setup();
 }
 
 function draw() {
@@ -262,7 +256,6 @@ function draw() {
     updatePlayer();
     displayPlayer();
 
-    blinky.setup();
     blinky.display();
 
     if (pathFindingState === "DONE") {
