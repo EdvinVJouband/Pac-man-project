@@ -165,7 +165,7 @@ class Ghost {
       }
     }
 
-    if (ghostCell.i * cellSize + cellSize/2 === tempPath[currentCell].i * cellSize + cellSize/2 && ghostCell.j *cellSize - cellSize/2 === tempPath[currentCell].j * cellSize - cellSize/2) {
+    if (ghostCell.i === tempPath[currentCell].i && ghostCell.j=== tempPath[currentCell].j) {
       currentCell --;
       //tempGhostX = this.ghostX;
       //tempGhostY = this.ghostY;
