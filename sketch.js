@@ -157,7 +157,7 @@ class Ghost {
 
     if (ghostCell.i !== tempPath[currentCell].i) {
 
-      if (ghostCell.i > tempPath[currentCell].i) {;
+      if (ghostCell.i > tempPath[currentCell].i) {
         this.ghostX -= cellSize/10;
       }
       else if (ghostCell.i < tempPath[currentCell].i) {
@@ -259,7 +259,7 @@ function draw() {
     if (pathFindingState === "DONE") {
       blinky.update();
       if (ghostCell.j === end.j && ghostCell.i === end.i) {
-         pathFindingState = "OVER";
+        pathFindingState = "OVER";
       }
     }
 
@@ -274,7 +274,7 @@ function draw() {
   
       openSet.push(start);
 
-      pathFindingState === "START"
+      // pathFindingState = "START";
     }
   }
 
