@@ -3,19 +3,17 @@
 // Monday, April 24, 2023
 //
 // Extra for Experts:
-// - describe what you did to take this project "above and beyond"
-// OpenGameArt.org
-// https://dev.to/code2bits/pac-man-patterns--ghost-movement-strategy-pattern-1k1a
+// I applyed the A_star pathfinding algorithim to moving objects, althougth it dosint quit work.
+// by the way when you run the code the ghost should make it all the way throught the path, at home it works for me but at school it didint so just letting you know
 
 let openSet = [], closedSet = [];
 let start, end;
 const ROWS = 31, COLS = 28;
 let cellSize;
-// let grid = new Array(COLS);
 let pelletArray = [];
 let path = [], tempPath = [];
 let nosolution = false;
-let playerX = 0, playerY = 0, gohstX = 0, gohstY = 0; //tempGhostX = 0, tempGhostY = 0;
+let playerX = 0, playerY = 0, gohstX = 0, gohstY = 0;
 let playerRadius, playerDiameter;
 let gameState = "game", ghostSate = "attack";
 let startTime = 0, currentTime = 0;
@@ -53,7 +51,6 @@ let grid = [[1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1
   [1, 0, 0, 3, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 0, 0, 3, 1, 1, 0, 0, 0, 0, 1], 
   [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]];
 
-// stores all the nessessairy values for the cells in objects
 class Cell {
   constructor(i, j, cellValue) {
     this.i = i;
@@ -66,16 +63,13 @@ class Cell {
     this.wall = false;
     this.cellValue = cellValue;
 
-    // there is a 30% chance of a cell being generated as a wall/obstacle
-    // if (random(1) < 0.3) {
-    //   this.wall = true;
-    // }
-
+    // if there is a 1 in the grid it becomes a wall in the game
     if (this.cellValue === 1) {
       this.wall = true;
     }
   }
 
+  // display the cells as black for walls and white for empty space
   show(cellColor) {
     fill(cellColor);
     if (this.wall) {
@@ -85,6 +79,7 @@ class Cell {
     rect(this.i * cellSize, this.j * cellSize, cellSize - 1, cellSize - 1);
   }
   
+  // count the neighbors of each cell
   addNeighbors(grid) {
     let i = this.i;
     let j = this.j;
@@ -139,8 +134,7 @@ class Ghost {
   }
 
   update() {
-    // move through each cell in the path
-
+    // move through each cell in the order of the path
     if (currentCell === -1) {
       currentCell = tempPath.length - 1;
     }
@@ -167,22 +161,18 @@ class Ghost {
 
     if (ghostCell.i === tempPath[currentCell].i && ghostCell.j=== tempPath[currentCell].j) {
       currentCell --;
-      //tempGhostX = this.ghostX;
-      //tempGhostY = this.ghostY;
     }
-
-    // ghostCell.j === tempPath[currentCell].j && ghostCell.i === tempPath[currentCell].i
-
     findGhostPosition();
-
   }
 
   display() {
+    // display the ghost as a red circle
     fill("red");
     circle(this.ghostX, this.ghostY, playerDiameter);
   }
 
   setup() {
+    // helps set the ghost starting position
     if (this.ghostX < 0) {
       this.ghostX = cellSize*COLS;
     }
@@ -190,9 +180,6 @@ class Ghost {
     if (this.ghostX > cellSize*COLS) {
       this.ghostX = 0;
     }
-
-    //tempGhostX = this.ghostX;
-    //tempGhostY = this.ghostY;
   }
 }
 
@@ -214,20 +201,14 @@ function setup() {
   playerRadius = playerDiameter/2;
   
   createGrid();
-  
-  // start = grid[1][1];
-  // end = grid[COLS - 2][ROWS - 2];
-  
-  // start.wall = false;
-  // end.wall = false;
-  
-  // openSet.push(start);
 
   blinky = new Ghost(1, "attack");
 
+  // find wich cell the ghost and player are in
   findPlayerPosition();
   findGhostPosition();
   
+  // make the cell the ghost is in the start of the pathfinding algorithim and the cell the player is on the end
   start = ghostCell;
   end = playerCell;
 
@@ -239,8 +220,10 @@ function setup() {
 function draw() {
   background(220);
 
+  // only run the game when it's not in the menu or win en state
   if (gameState === "game") {
 
+    // this runs the pathfinding but only when in the right state
     if (pathFindingState === "START") {
       A_Star();
     }
@@ -256,6 +239,7 @@ function draw() {
 
     blinky.display();
 
+    // this is a check so that when the pathfinding is done it ends and the ghost moves, then when the ghost reaches the end the pathfing should start again, if you uncomment tha tlast line it will crash but it's supposed to pathfind again
     if (pathFindingState === "DONE") {
       blinky.update();
       if (ghostCell.j === end.j && ghostCell.i === end.i) {
@@ -282,6 +266,7 @@ function draw() {
 }
 
 function removeFromArray(arr, elt){
+  // removes a given element form a given array if seen
   for (let i = arr.length - 1; i >= 0; i --) {
     if (arr[i] === elt) {
       arr.splice(i, 1);
@@ -290,6 +275,7 @@ function removeFromArray(arr, elt){
 }
 
 function changeInArray(arr, elt){
+  // changes a given element from a given array if seen, I used this for the pellets because I didint want to delete them because it would change the length of the array
   for (let i = arr.length - 1; i >= 0; i --) {
     if (arr[i] === elt) {
       arr[i] = 0;
@@ -298,13 +284,17 @@ function changeInArray(arr, elt){
 }
 
 function heuristic(a, b) {
+  // finds the dirrect distance of the two given points
   let d = abs(a.i - b.i) + abs(a.j - b.j);
   return d;
 }
 
+// this was mostlybin my last project so I wont mention it much
 function A_Star() {
+  // runs if the openset is not empty
   if (openSet.length > 0) {
 
+  // let the cell with the lowest f score be the winner
     let winner = 0;
     for (let i = 0; i < openSet.length; i ++) {
       if (openSet[i].f < openSet[winner].f) {
@@ -314,7 +304,6 @@ function A_Star() {
     let current = openSet[winner];
 
     if (current === end) {
-      //noLoop();
       console.log("DONE");
       pathFindingState = "DONE";
       return ;
@@ -348,12 +337,6 @@ function A_Star() {
       }
     }
   }
-  else {
-    // console.log("done");
-    // return "done";
-
-
-  }
 }
 
 function displayGrid() {
@@ -380,11 +363,7 @@ function displayGrid() {
 }
 
 function createGrid() {
-  // create a 2D array
-  // for (let i = 0; i < COLS; i++) {
-  //   grid[i] = new Array(ROWS);
-  // }
-
+  // creates the cells and pellets based on my precodded grid
   for (let i = 0; i < COLS; i++) {
     pelletArray[i] = new Array(ROWS);
   }
@@ -396,7 +375,7 @@ function createGrid() {
     }
   }
 
-  // set anu cell with a wall to change it's according pelletArray value to zero
+  // set any cell with a wall to change it's according pelletArray value to zero
   for (let i = 0; i < COLS; i++) {
     for (let j = 0; j < ROWS; j++) {
       grid[i][j].addNeighbors(grid);
@@ -414,6 +393,7 @@ function displayCells() {
     openSet[i].show(color(0, 255, 0));
   }
   
+  // finds the path by comparing scores from the A_star function and building it backwards
   if (!nosolution) {
     if (openSet.length > 0) {
       let winner = 0;
@@ -423,19 +403,6 @@ function displayCells() {
         }
       }
       let current = openSet[winner];
-
-      //if (current === end) {
-      // path = [];
-      // let temp = current;
-      // path.push(temp);
-      // while (temp.previous) {
-      //   path.push(temp.previous);
-      //   temp = temp.previous;
-      // }
-      // noLoop();
-      // console.log("DONE");
-      // return "Done";
-      //}
 
       path = [];
       let temp = current;
@@ -451,6 +418,7 @@ function displayCells() {
     path[i].show(color(0, 0, 255));
   }
 
+  // creates a temp path for the ghost to move through
   if (pathFindingState === "DONE") {
     tempPath = [...path];
     path = [];
@@ -458,6 +426,7 @@ function displayCells() {
 }
 
 function displayPlayer() {
+// displays the player as a yellow circle, was going to add animations latter
   fill("yellow");
 
   // just for testing
@@ -469,6 +438,8 @@ function displayPlayer() {
 }
 
 function updatePlayer() {
+  // I calculate the movement 5 times so the player moves fast and fits throught the in cell wide gaps in the level
+  // the player will get push out of any cell labelled as wall
   let playerSpeed = 1;
   for (let m = 0; m < 5; m ++) {
     if (keyIsDown(68)) { //d
@@ -531,7 +502,7 @@ function updatePlayer() {
 
   }
 
-  // eat pellets
+  // the player will eat any pellets it touches
   for (let i = 0; i < COLS; i ++) {
     for (let j = 0; j < ROWS; j ++) {
       if (i*cellSize + cellSize/2 + 10 >= playerX - playerRadius && i*cellSize + cellSize/2 - 10 <= playerX + playerRadius && j*cellSize + cellSize/2 - 10 <= playerY + playerRadius && j*cellSize + cellSize/2 + 10 >= playerY - playerRadius) {
@@ -542,6 +513,8 @@ function updatePlayer() {
 }
 
 function setSate() {
+  // set's the states, the game starts in a menu you need to press enter to leave and then it starts and if you eat all the cells the game ends
+  // I dont use the menu state for testing and becauser I didint have time to addd anything to it
   if (gameState === "menu" && keyIsDown(13)) { //enter
     gameState = "game";
   }
@@ -550,6 +523,7 @@ function setSate() {
     let pelletCount = 0;
     superPelletCount = 0;
 
+    // I count all the remaining pellets to determin wether or not to end the game
     for (let i = 0; i < COLS; i ++) {
       for (let j = 0; j < ROWS; j ++) {
         // count pellets
@@ -564,6 +538,8 @@ function setSate() {
       }
     }
 
+    // when you eat a big/super pellet the state of the player changes for a set time, the timer get's reset every time you eat one
+    // the time a set was temporary, also the player turn sblue when this timer is active for testing
     if (superPelletCount !== superPelletsLeft) {
       ghostSate = "runAway";
       superPelletsLeft --;
@@ -590,6 +566,7 @@ function setSate() {
 }
 
 function findPlayerPosition() {
+  // finds wich cell the center of the player is in
   for (let i = 0; i < COLS; i++) {
     for (let j = 0; j < ROWS; j++) {
       if (i*cellSize + cellSize > playerX && i*cellSize < playerX && j*cellSize < playerY && j*cellSize + cellSize > playerY) {
@@ -602,6 +579,7 @@ function findPlayerPosition() {
 }
 
 function findGhostPosition() {
+  // finds when the ghosts passes the center of a cell, to know were it si and realingns it
   for (let i = 0; i < COLS; i++) {
     for (let j = 0; j < ROWS; j++) {
       if (abs(i * cellSize + cellSize/2 - 1 - blinky.ghostX) < cellSize/10 && abs(j * cellSize + cellSize/2 - 1 - blinky.ghostY) < cellSize/10) {
